@@ -1,0 +1,114 @@
+:root {
+  /* --- Color: dark botanical-instrument palette --- */
+  --bg-deep: #1b2420;
+  --bg-deep-2: #172019;
+  --surface: #242f29;
+  --surface-raised: #2b372f;
+  --paper: #efead9;
+  --paper-dim: #e4dfc9;
+  --ink: #e8e4d6;
+  --ink-dim: #a9b3a7;
+  --ink-dark: #23281f;
+  --ink-dark-dim: #4a5245;
+
+  --confidence-high: #7fa65b;
+  --confidence-high-dim: #3c4a30;
+  --confidence-low: #c98a3f;
+  --confidence-low-dim: #4a3c24;
+  --confidence-unreliable: #b5533d;
+  --confidence-unreliable-dim: #4a2c24;
+
+  --evidence: #5b8a8a;
+  --evidence-dim: #26383a;
+
+  --hairline: #3c4a3f;
+  --hairline-on-paper: #d3cdb4;
+
+  --focus-ring: #d8c66a;
+
+  /* --- Type --- */
+  --font-display: "Fraunces", "Iowan Old Style", serif;
+  --font-body: "Work Sans", "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", monospace;
+
+  --fs-display-lg: clamp(2.2rem, 1.6rem + 2.4vw, 3.4rem);
+  --fs-display-md: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  --fs-body-lg: 1.15rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-caption: 0.75rem;
+
+  /* --- Spacing / layout --- */
+  --space-xs: 0.4rem;
+  --space-sm: 0.75rem;
+  --space-md: 1.25rem;
+  --space-lg: 2rem;
+  --space-xl: 3.5rem;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --max-width: 1080px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-deep);
+  background-image:
+    radial-gradient(ellipse at top left, rgba(127, 166, 91, 0.06), transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(91, 138, 138, 0.05), transparent 50%);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0;
+}
+
+a {
+  color: var(--evidence);
+}
+
+button {
+  font-family: var(--font-body);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

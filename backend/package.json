@@ -1,0 +1,29 @@
+{
+  "name": "plant-disease-backend",
+  "version": "1.0.0",
+  "description": "Node/Express backend for the Evidence-Grounded Plant Disease Decision Support System. Proxies requests to the Python ML/RAG service; contains no ML logic itself.",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.4.1",
+    "form-data": "^4.0.1",
+    "morgan": "^1.10.0",
+    "multer": "^2.2.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "node-mocks-http": "^1.18.1",
+    "supertest": "^7.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,107 @@
+.intake {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.intake__tag {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.intake__slot {
+  border: 1.5px dashed var(--hairline);
+  border-radius: var(--radius-md);
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  background: var(--bg-deep-2);
+  overflow: hidden;
+}
+
+.intake__slot:hover,
+.intake__slot--drag {
+  border-color: var(--evidence);
+  background: var(--evidence-dim);
+}
+
+.intake__slot--filled {
+  border-style: solid;
+}
+
+.intake__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  text-align: center;
+  padding: var(--space-lg);
+}
+
+.intake__placeholder-text {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--fs-body-lg);
+}
+
+.intake__placeholder-text span {
+  color: var(--evidence);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.intake__hint {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: var(--fs-caption);
+}
+
+.intake__preview {
+  width: 100%;
+  height: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  display: block;
+}
+
+.intake__error {
+  color: var(--confidence-unreliable);
+  font-size: var(--fs-small);
+  margin: 0;
+}
+
+.intake__submit {
+  background: var(--confidence-high);
+  color: var(--ink-dark);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.5rem;
+  font-size: var(--fs-body-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.intake__submit:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.intake__submit:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.intake__submit:disabled {
+  background: var(--hairline);
+  color: var(--ink-dim);
+  cursor: not-allowed;
+}

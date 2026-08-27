@@ -1,0 +1,65 @@
+.gradcam {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.gradcam__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.gradcam__title {
+  font-size: 1.1rem;
+  color: var(--ink-dark);
+}
+
+.gradcam__toggle {
+  display: inline-flex;
+  border: 1px solid var(--hairline-on-paper);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.gradcam__toggle-btn {
+  background: transparent;
+  border: none;
+  padding: 0.35rem 0.9rem;
+  font-size: var(--fs-caption);
+  font-family: var(--font-mono);
+  cursor: pointer;
+  color: var(--ink-dark-dim);
+}
+
+.gradcam__toggle-btn--active {
+  background: var(--evidence);
+  color: var(--paper);
+}
+
+.gradcam__frame {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--hairline-on-paper);
+  background: var(--ink-dark);
+  max-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gradcam__image {
+  width: 100%;
+  height: auto;
+  max-height: 380px;
+  object-fit: contain;
+  display: block;
+}
+
+.gradcam__caption {
+  margin: 0;
+  font-size: var(--fs-caption);
+  color: var(--ink-dark-dim);
+}

@@ -1,0 +1,44 @@
+# Environment
+.env
+*.env.local
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+venv/
+.venv/
+
+# Node
+node_modules/
+dist/
+.vite/
+*.log
+
+# Model artifacts (large binary files -- do not commit)
+models/*.pt
+models/*.pth
+models/*.onnx
+models/*.json
+!models/README.md
+
+# Dataset (large -- never commit)
+data/plantvillage/
+data/vector_db/
+data/predictions_log.jsonl
+data/gradcam_outputs/
+
+# Knowledge base PDFs can be large; track structure, not necessarily large binaries
+# (uncomment the next line if you don't want to version PDFs in git)
+# knowledge_base/documents/*.pdf
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Test artifacts
+coverage/
+.nyc_output/

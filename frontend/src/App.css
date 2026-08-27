@@ -1,0 +1,137 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app__header {
+  border-bottom: 1px solid var(--hairline);
+  padding: var(--space-lg) var(--space-md);
+}
+
+.app__header-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.app__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.app__brand-mark {
+  flex-shrink: 0;
+}
+
+.app__title {
+  font-size: 1.3rem;
+  color: var(--ink);
+}
+
+.app__subtitle {
+  margin: 0.2rem 0 0 0;
+  color: var(--ink-dim);
+  font-size: var(--fs-small);
+}
+
+.app__main {
+  flex: 1;
+  padding: var(--space-xl) var(--space-md);
+}
+
+.app__grid {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(340px, 1.4fr);
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .app__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.app__result-slot {
+  min-height: 260px;
+}
+
+.app__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  min-height: 260px;
+  text-align: center;
+  color: var(--ink-dim);
+  padding: var(--space-lg);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.app__loading-spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid var(--hairline);
+  border-top-color: var(--confidence-high);
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.app__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  text-align: center;
+  color: var(--ink-dim);
+  padding: var(--space-lg);
+  border: 1px dashed var(--hairline);
+  border-radius: var(--radius-lg);
+}
+
+.app__error {
+  border: 1px solid var(--confidence-unreliable);
+  background: var(--confidence-unreliable-dim);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  color: #f5c9bd;
+}
+
+.app__error strong {
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.app__error p {
+  margin: 0;
+  font-size: var(--fs-small);
+}
+
+.app__footer {
+  border-top: 1px solid var(--hairline);
+  padding: var(--space-md);
+  text-align: center;
+}
+
+.app__footer p {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: var(--fs-caption);
+}
