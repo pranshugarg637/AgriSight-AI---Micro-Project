@@ -10,6 +10,24 @@ class AlternativeDiagnosis(BaseModel):
     crop: str
     disease: str
     confidence: float
+    class_key: str | None = None
+
+
+class CandidateProbability(BaseModel):
+    """Top-k calibrated class probabilities (used by symptom-question refinement)."""
+    class_key: str
+    crop: str
+    disease: str
+    probability: float
+
+
+class FaithfulnessReport(BaseModel):
+    checked: bool
+    backend: str
+    total_sentences: int = 0
+    unsupported_sentences: list[str] = []
+    unsupported_rate: float | None = None
+    action: str = "none"  # "none" | "removed_unsupported" | "flagged"
 
 
 class SourceCitation(BaseModel):
@@ -29,6 +47,17 @@ class PredictionResponse(BaseModel):
     is_reliable: bool
     confidence_message: str
     alternatives: list[AlternativeDiagnosis] = []
+    # --- v2 additive fields ---
+    class_key: str | None = Field(default=None, description="Raw class id, e.g. 'Tomato___Late_blight'")
+    unreliable_reason: str | None = Field(
+        default=None, description="null | 'low_confidence' | 'not_a_leaf' | 'unsupported_crop'")
+    top_candidates: list[CandidateProbability] = []
+    calibrated: bool = False
+    language: str = "en"
+    explanation_translated: str | None = None
+    translation_backend: str | None = None
+    translation_status: str = "not_requested"
+    faithfulness: FaithfulnessReport | None = None
     gradcam_image_base64: str | None = None
     gradcam_note: str = "Highlighted regions indicate areas that influenced the model's prediction."
     explanation: str | None = None

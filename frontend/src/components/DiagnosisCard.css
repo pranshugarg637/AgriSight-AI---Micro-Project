@@ -86,3 +86,4 @@
   border-top: 1px solid var(--hairline-on-paper);
   padding-top: var(--space-sm);
 }
+.diagnosis-card__localized { margin: 0 0 0.3rem; font-weight: 600; }

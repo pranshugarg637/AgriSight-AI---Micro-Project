@@ -149,6 +149,31 @@ Training on CPU can take a while depending on dataset size; a GPU
    (`sentence-transformers/all-MiniLM-L6-v2`) from Hugging Face -- this
    requires normal internet access.
 
+### (Optional) Enable translation of the explanation (Step 2)
+
+The English, evidence-grounded explanation is always produced first; a
+translation backend then translates it. Choose one with
+`TRANSLATION_BACKEND`:
+
+- `indictrans2` (default, open model, runs locally):
+
+  ```bash
+  pip install transformers sentencepiece
+  pip install IndicTransToolkit   # recommended pre/post-processing (optional)
+  ```
+
+  The first Hindi request downloads `ai4bharat/indictrans2-en-indic-dist-200M`
+  (~1 GB RAM on CPU). If the download is impossible, responses say
+  `translation_status: "unavailable"` and the English text is shown.
+- `bhashini`: set `BHASHINI_USER_ID` and `BHASHINI_API_KEY` (from the Bhashini/ULCA portal).
+- `none`: English only.
+
+Check round-trip drift (a warning signal, not proof of quality):
+
+```bash
+python -m app.translation.drift_check --lang hi --out ../docs/translation_drift_hi.json
+```
+
 ### Set up Ollama (LLM)
 
 ```bash

@@ -101,6 +101,25 @@ optional `plot_id`.
 }
 ```
 
+### v2 additive response fields
+
+| Field | Meaning |
+|---|---|
+| `class_key` | Raw class id (e.g. `Tomato___Late_blight`) -- used for audio scripts, questions, risk rules |
+| `unreliable_reason` | `null`, `low_confidence`, `not_a_leaf`, `unsupported_crop` (Step 5) |
+| `top_candidates` | Top-5 `{class_key, crop, disease, probability}` (calibrated) |
+| `calibrated` | `true` when temperature scaling from `model_config.json` was applied |
+| `language` | Language actually used (`en` if the requested one is not in `SUPPORTED_LANGUAGES`) |
+| `explanation` | **Always English** -- the evidence-grounded source of truth |
+| `explanation_translated` | Machine translation of `explanation` into `language`, or `null` |
+| `translation_backend` | `indictrans2` / `bhashini` / `none` |
+| `translation_status` | `not_requested`, `translated`, `unavailable` (backend not installed / no keys), `failed` |
+| `faithfulness` | Citation-faithfulness report (Step 5) |
+| `scan_id`, `plot_id` | Added by the backend for Account Mode |
+
+`sources` are the same citations for both the English and the translated
+text -- translation never adds or removes evidence.
+
 `retrieval_status` is one of: `success`, `insufficient_evidence`,
 `knowledge_base_empty`, `skipped_low_confidence` (set when
 `confidence_level` is `unreliable` and RAG/LLM are skipped entirely).

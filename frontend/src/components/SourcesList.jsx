@@ -1,11 +1,13 @@
+import { useTranslation } from "react-i18next";
 import "./SourcesList.css";
 
 export default function SourcesList({ sources, retrievalStatus }) {
+  const { t } = useTranslation();
   if (retrievalStatus === "knowledge_base_empty") {
     return (
       <div className="sources sources--empty">
-        <h3 className="sources__title">Sources</h3>
-        <p>The agricultural knowledge base has no documents loaded yet. See docs/rag.md for setup.</p>
+        <h3 className="sources__title">{t("sources.title")}</h3>
+        <p>{t("sources.kbEmpty")}</p>
       </div>
     );
   }
@@ -13,30 +15,30 @@ export default function SourcesList({ sources, retrievalStatus }) {
   if (!sources || sources.length === 0) {
     return (
       <div className="sources sources--empty">
-        <h3 className="sources__title">Sources</h3>
-        <p>No sufficiently relevant sources were found for this diagnosis.</p>
+        <h3 className="sources__title">{t("sources.title")}</h3>
+        <p>{t("sources.none")}</p>
       </div>
     );
   }
 
   return (
     <div className="sources">
-      <h3 className="sources__title">Sources</h3>
+      <h3 className="sources__title">{t("sources.title")}</h3>
       <ul className="sources__list">
         {sources.map((source, i) => (
           <li key={i} className="sources__card">
             <div className="sources__card-header">
               <span className="sources__doc-title">{source.title}</span>
-              <span className="sources__relevance mono">{Math.round(source.relevance_score * 100)}% match</span>
+              <span className="sources__relevance mono">{t("sources.match", { percent: Math.round(source.relevance_score * 100) })}</span>
             </div>
             <div className="sources__meta">
               <span>{source.organization}</span>
-              {source.page != null && <span>· Page {source.page}</span>}
+              {source.page != null && <span>· {t("sources.page", { page: source.page })}</span>}
             </div>
             <p className="sources__excerpt">{source.excerpt}</p>
             {source.source_url && (
               <a href={source.source_url} target="_blank" rel="noopener noreferrer" className="sources__link">
-                View source
+                {t("sources.view")}
               </a>
             )}
           </li>

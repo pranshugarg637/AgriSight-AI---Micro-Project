@@ -131,3 +131,20 @@ its prompt.
 See `docs/evaluation.md` for the manual RAG evaluation set (retrieved
 source, relevance, citation correctness, groundedness) used to demonstrate
 retrieval quality academically.
+
+## v2: multilingual output
+
+The LLM is always prompted in English and must stay grounded in the
+retrieved English evidence. Translation is a **separate, swappable step**
+(`ml-service/app/translation/`): `indictrans2` (open model), `bhashini`
+(API), or `none`. The response carries both `explanation` (English source
+of truth) and `explanation_translated`, plus the same `sources`, and the
+Account UI shows them side by side. `llama3.2` is never asked to write Hindi
+or any other language directly, because its quality in Indic languages is
+unverified and translation errors would be indistinguishable from
+grounding errors.
+
+**Limitation:** machine translation can change meaning. The back-translation
+drift script (`python -m app.translation.drift_check`) only flags sentences
+whose round trip drifts; it does not prove a translation is correct.
+Native-speaker review is listed in `docs/HUMAN_TODO.md`.

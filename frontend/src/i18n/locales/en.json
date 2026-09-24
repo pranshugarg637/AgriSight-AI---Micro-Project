@@ -1,10 +1,16 @@
 {
-  "_meta": { "nativeName": "English", "dir": "ltr", "speechLang": "en-IN" },
+  "_meta": {
+    "nativeName": "English",
+    "dir": "ltr",
+    "speechLang": "en-IN"
+  },
   "app": {
     "name": "AgriSight AI",
     "disclaimer": "Trained mainly on lab photos (PlantVillage). Real-field results may differ. Always confirm with your local agriculture office before acting."
   },
-  "language": { "choose": "Choose language" },
+  "language": {
+    "choose": "Choose language"
+  },
   "common": {
     "loading": "Loading…",
     "pleaseWait": "Please wait…",
@@ -52,5 +58,85 @@
     "expert": "Expert review",
     "admin": "Monitoring",
     "settings": "Settings"
+  },
+  "upload": {
+    "tag": "Specimen intake",
+    "inputLabel": "Upload a leaf photo",
+    "previewAlt": "Uploaded leaf preview",
+    "dragHere": "Drag a leaf photo here, or",
+    "browse": "browse files",
+    "hint": "JPEG, PNG, or WebP · well-lit, in focus, leaf fills the frame",
+    "wrongType": "Please choose a JPEG, PNG, or WebP photo of the leaf.",
+    "diagnosing": "Diagnosing…",
+    "submit": "Diagnose specimen"
+  },
+  "pipeline": {
+    "label": "Diagnostic pipeline stages",
+    "upload": "Upload",
+    "classify": "Classify",
+    "explain": "Explain",
+    "verify": "Verify",
+    "validate": "Check photo",
+    "retrieve": "Find evidence",
+    "generate": "Write explanation",
+    "translate": "Translate"
+  },
+  "confidence": {
+    "high": "High confidence",
+    "low": "Low confidence — verify diagnosis",
+    "unreliable": "Unable to diagnose reliably",
+    "message": {
+      "high": "The system is fairly sure about this result.",
+      "low": "The system is not sure. Treat this as a possibility only.",
+      "unreliable": "The system cannot tell from this photo."
+    }
+  },
+  "gauge": {
+    "aria": "Confidence gauge showing {{percent}} percent, {{level}}"
+  },
+  "differential": {
+    "title": "Differential diagnosis",
+    "note": "Other conditions the model weighed before settling on its top prediction.",
+    "primary": "Primary"
+  },
+  "gradcam": {
+    "title": "Visual explanation",
+    "toggle": "Toggle between original and Grad-CAM image",
+    "original": "Original",
+    "gradcam": "Grad-CAM",
+    "overlayAlt": "Grad-CAM heatmap overlay on the leaf",
+    "originalAlt": "Original uploaded leaf photo"
+  },
+  "sources": {
+    "title": "Sources",
+    "kbEmpty": "The agricultural knowledge base has no documents loaded yet. See docs/rag.md for setup.",
+    "none": "No sufficiently relevant sources were found for this diagnosis.",
+    "match": "{{percent}}% match",
+    "page": "Page {{page}}",
+    "view": "View source"
+  },
+  "explanation": {
+    "title": "Evidence-grounded explanation",
+    "noEvidence": "Reliable information could not be found in the agricultural knowledge base for this diagnosis. Please consult a qualified agricultural expert before taking action.",
+    "unavailable": "The explanation could not be generated right now. The diagnosis and evidence above are still valid.",
+    "translationUnavailable": "A translation is not available right now, so the explanation is shown in English.",
+    "machineTranslated": "Machine translation ({{backend}}). The English text is the checked source; compare both if unsure.",
+    "englishOriginal": "English (source)",
+    "translation": "Translation"
+  },
+  "diagnosis": {
+    "tag": "Diagnostic record",
+    "unavailable": "Diagnosis unavailable",
+    "retryHint": "Try again with a photo taken in good light, with the affected leaf filling most of the frame and in sharp focus.",
+    "notALeaf": "This photo does not look like a plant leaf. Photograph a single leaf in good light.",
+    "unsupportedCrop": "This leaf looks different from the crops the system knows. It may be a crop the system does not support, or an unusual photo. Please visit your nearest agriculture office."
+  },
+  "diagnose": {
+    "title": "Plant Disease Decision Support",
+    "subtitle": "Evidence-grounded diagnosis, not a guess from a general-purpose model.",
+    "running": "Running specialized CNN classification, retrieving agricultural evidence, and generating an explanation…",
+    "failed": "Could not complete diagnosis.",
+    "empty": "Upload a leaf photo to begin. The system will classify it, explain its reasoning with Grad-CAM, and ground its recommendation in retrieved agricultural evidence.",
+    "networkError": "Could not reach the server. Please check your connection and try again."
   }
 }

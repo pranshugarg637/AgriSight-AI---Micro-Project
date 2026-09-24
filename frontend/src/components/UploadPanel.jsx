@@ -1,9 +1,11 @@
 import { useCallback, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./UploadPanel.css";
 
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 export default function UploadPanel({ onAnalyze, isAnalyzing }) {
+  const { t } = useTranslation();
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -15,7 +17,7 @@ export default function UploadPanel({ onAnalyze, isAnalyzing }) {
     if (!selectedFile) return;
 
     if (!ACCEPTED_TYPES.includes(selectedFile.type)) {
-      setLocalError("Please choose a JPEG, PNG, or WebP photo of the leaf.");
+      setLocalError(t("upload.wrongType"));
       return;
     }
 
@@ -25,7 +27,7 @@ export default function UploadPanel({ onAnalyze, isAnalyzing }) {
       if (prev) URL.revokeObjectURL(prev);
       return url;
     });
-  }, []);
+  }, [t]);
 
   const onDrop = useCallback(
     (e) => {
@@ -39,7 +41,7 @@ export default function UploadPanel({ onAnalyze, isAnalyzing }) {
 
   return (
     <div className="intake">
-      <div className="intake__tag">Specimen intake</div>
+      <div className="intake__tag">{t("upload.tag")}</div>
 
       <div
         className={`intake__slot ${isDragOver ? "intake__slot--drag" : ""} ${previewUrl ? "intake__slot--filled" : ""}`}
@@ -61,12 +63,12 @@ export default function UploadPanel({ onAnalyze, isAnalyzing }) {
           type="file"
           accept={ACCEPTED_TYPES.join(",")}
           className="visually-hidden"
-          aria-label="Upload a leaf photo"
+          aria-label={t("upload.inputLabel")}
           onChange={(e) => handleFile(e.target.files?.[0])}
         />
 
         {previewUrl ? (
-          <img src={previewUrl} alt="Uploaded leaf preview" className="intake__preview" />
+          <img src={previewUrl} alt={t("upload.previewAlt")} className="intake__preview" />
         ) : (
           <div className="intake__placeholder">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
@@ -79,9 +81,9 @@ export default function UploadPanel({ onAnalyze, isAnalyzing }) {
               />
             </svg>
             <p className="intake__placeholder-text">
-              Drag a leaf photo here, or <span>browse files</span>
+              {t("upload.dragHere")} <span>{t("upload.browse")}</span>
             </p>
-            <p className="intake__hint">JPEG, PNG, or WebP · well-lit, in focus, leaf fills the frame</p>
+            <p className="intake__hint">{t("upload.hint")}</p>
           </div>
         )}
       </div>
@@ -93,7 +95,7 @@ export default function UploadPanel({ onAnalyze, isAnalyzing }) {
         disabled={!file || isAnalyzing}
         onClick={() => onAnalyze(file)}
       >
-        {isAnalyzing ? "Diagnosing…" : "Diagnose specimen"}
+        {isAnalyzing ? t("upload.diagnosing") : t("upload.submit")}
       </button>
     </div>
   );

@@ -38,3 +38,25 @@
   font-size: var(--fs-small);
   white-space: pre-wrap;
 }
+
+.explanation__note {
+  font-size: var(--fs-small);
+  color: var(--ink-dark-dim);
+  border-left: 3px solid var(--confidence-low);
+  padding-left: var(--space-sm);
+}
+.explanation__compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+@media (max-width: 720px) {
+  .explanation__compare { grid-template-columns: 1fr; }
+}
+.explanation__lang {
+  font-size: var(--fs-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-dark-dim);
+  margin: 0 0 var(--space-xs);
+}

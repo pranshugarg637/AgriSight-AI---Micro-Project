@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { tokenStore, refreshSession } from "../api/http";
 import * as authApi from "../api/auth";
+import i18n, { changeLanguage } from "../i18n";
 
 const AuthContext = createContext(null);
 
@@ -25,6 +26,8 @@ export function AuthProvider({ children, skipInitialRefresh = false }) {
     (session) => {
       if (session && session.user) {
         setUser(session.user);
+        const lang = session.user.preferred_language;
+        if (lang && lang !== i18n.language) changeLanguage(lang);
         setStatus("authenticated");
         schedule(session.expires_in);
       } else {

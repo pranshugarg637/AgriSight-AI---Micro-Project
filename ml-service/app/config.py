@@ -57,6 +57,18 @@ class Settings:
     CHUNK_SIZE: int = _get_int("CHUNK_SIZE", 800)
     CHUNK_OVERLAP: int = _get_int("CHUNK_OVERLAP", 120)
 
+    # --- Languages / translation (Step 2) ---
+    SUPPORTED_LANGUAGES: tuple = tuple(
+        x.strip() for x in os.getenv("SUPPORTED_LANGUAGES", "en,hi").split(",") if x.strip()
+    )
+    TRANSLATION_BACKEND: str = os.getenv("TRANSLATION_BACKEND", "indictrans2")
+    TRANSLATION_DEVICE: str = os.getenv("TRANSLATION_DEVICE", "cpu")
+    INDICTRANS2_EN_INDIC_MODEL: str = os.getenv("INDICTRANS2_EN_INDIC_MODEL", "ai4bharat/indictrans2-en-indic-dist-200M")
+    INDICTRANS2_INDIC_EN_MODEL: str = os.getenv("INDICTRANS2_INDIC_EN_MODEL", "ai4bharat/indictrans2-indic-en-dist-200M")
+    BHASHINI_USER_ID: str = os.getenv("BHASHINI_USER_ID", "")
+    BHASHINI_API_KEY: str = os.getenv("BHASHINI_API_KEY", "")
+    BHASHINI_PIPELINE_ID: str = os.getenv("BHASHINI_PIPELINE_ID", "64392f96daac500b55c543cd")
+
     # --- LLM (Ollama) ---
     LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "ollama")
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")

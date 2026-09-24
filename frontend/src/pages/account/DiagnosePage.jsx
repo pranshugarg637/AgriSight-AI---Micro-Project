@@ -9,7 +9,7 @@ import "./DiagnosePage.css";
 const STAGE = { IDLE: -1, UPLOAD: 0, CLASSIFY: 1, EXPLAIN: 2, VERIFY: 3 };
 
 export default function DiagnosePage() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [result, setResult] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -37,7 +37,7 @@ export default function DiagnosePage() {
       if (err instanceof ApiError) {
         setError(err.message);
       } else {
-        setError("Could not reach the server. Please check your connection and try again.");
+        setError(t("diagnose.networkError"));
       }
     } finally {
       setIsAnalyzing(false);
@@ -61,8 +61,8 @@ export default function DiagnosePage() {
               </svg>
             </span>
             <div>
-              <h1 className="app__title">Plant Disease Decision Support</h1>
-              <p className="app__subtitle">Evidence-grounded diagnosis, not a guess from a general-purpose model.</p>
+              <h1 className="app__title">{t("diagnose.title")}</h1>
+              <p className="app__subtitle">{t("diagnose.subtitle")}</p>
             </div>
           </div>
           <PipelineTrail activeIndex={activeStage} />
@@ -77,13 +77,13 @@ export default function DiagnosePage() {
             {isAnalyzing && (
               <div className="app__loading" role="status">
                 <div className="app__loading-spinner" aria-hidden="true" />
-                <p>Running specialized CNN classification, retrieving agricultural evidence, and generating an explanation…</p>
+                <p>{t("diagnose.running")}</p>
               </div>
             )}
 
             {error && !isAnalyzing && (
               <div className="app__error" role="alert">
-                <strong>Could not complete diagnosis.</strong>
+                <strong>{t("diagnose.failed")}</strong>
                 <p>{error}</p>
               </div>
             )}
@@ -92,7 +92,7 @@ export default function DiagnosePage() {
 
             {!result && !isAnalyzing && !error && (
               <div className="app__empty">
-                <p>Upload a leaf photo to begin. The system will classify it, explain its reasoning with Grad-CAM, and ground its recommendation in retrieved agricultural evidence.</p>
+                <p>{t("diagnose.empty")}</p>
               </div>
             )}
           </div>
@@ -100,10 +100,7 @@ export default function DiagnosePage() {
       </main>
 
       <footer className="app__footer">
-        <p>
-          Built as a college decision-support project. Trained primarily on the PlantVillage dataset; real-world field
-          performance may differ.
-        </p>
+        <p>{t("app.disclaimer")}</p>
       </footer>
     </div>
   );

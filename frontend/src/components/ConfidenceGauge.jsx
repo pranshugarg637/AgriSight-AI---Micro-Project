@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import "./ConfidenceGauge.css";
 
 const ZONES = [
@@ -25,6 +26,7 @@ function describeArc(cx, cy, r, startAngle, endAngle) {
 }
 
 export default function ConfidenceGauge({ confidence, confidenceLevel }) {
+  const { t } = useTranslation();
   const percent = Math.round(confidence * 100);
   const needleAngle = percentToAngle(percent);
   const cx = 100;
@@ -41,7 +43,7 @@ export default function ConfidenceGauge({ confidence, confidenceLevel }) {
   const needleTip = polarToCartesian(cx, cy, r - 14, needleAngle);
 
   return (
-    <div className="gauge" role="img" aria-label={`Confidence gauge showing ${percent} percent, ${confidenceLevel} confidence`}>
+    <div className="gauge" role="img" aria-label={t("gauge.aria", { percent, level: t(`confidence.${confidenceLevel}`) })}>
       <svg viewBox="0 0 200 118" className="gauge__svg">
         {ZONES.map((zone) => {
           const startAngle = -90 + (zone.start / 100) * 180;
@@ -94,9 +96,7 @@ export default function ConfidenceGauge({ confidence, confidenceLevel }) {
       <div className="gauge__readout">
         <span className="gauge__percent mono">{percent}%</span>
         <span className="gauge__level" style={{ color: activeColorVar }}>
-          {confidenceLevel === "high" && "High confidence"}
-          {confidenceLevel === "low" && "Low confidence — verify diagnosis"}
-          {confidenceLevel === "unreliable" && "Unable to diagnose reliably"}
+          {t(`confidence.${confidenceLevel}`)}
         </span>
       </div>
     </div>

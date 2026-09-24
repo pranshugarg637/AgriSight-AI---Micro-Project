@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import "./ExplanationSections.css";
 
 // Splits the LLM's response on "## Heading" markers into { heading, body } pairs.
-function parseSections(text) {
+// eslint-disable-next-line react-refresh/only-export-components
+export function parseSections(text) {
   if (!text) return [];
   const lines = text.split("\n");
   const sections = [];
@@ -22,15 +24,36 @@ function parseSections(text) {
 
 const CAUTION_HEADING = "Important caution";
 
-export default function ExplanationSections({ explanation, retrievalStatus }) {
+function SectionList({ text, cautionIndex }) {
+  const sections = parseSections(text);
+  if (sections.length === 0) return <p>{text}</p>;
+  return sections.map((section, i) => (
+    <div
+      key={i}
+      className={`explanation__section ${
+        section.heading === CAUTION_HEADING || i === cautionIndex ? "explanation__section--caution" : ""
+      }`}
+    >
+      <h4 className="explanation__heading">{section.heading}</h4>
+      <p className="explanation__body">{section.body}</p>
+    </div>
+  ));
+}
+
+/**
+ * Shows the English, evidence-grounded explanation. When a translation is
+ * present it is shown side by side with the English source of truth so a
+ * reviewer can compare them (translations are machine-generated).
+ */
+export default function ExplanationSections({ explanation, retrievalStatus, translated, translationBackend, translationStatus }) {
+  const { t } = useTranslation();
+  const title = <h3 className="explanation__title">{t("explanation.title")}</h3>;
+
   if (retrievalStatus === "insufficient_evidence" || retrievalStatus === "knowledge_base_empty") {
     return (
       <div className="explanation explanation--empty">
-        <h3 className="explanation__title">Evidence-grounded explanation</h3>
-        <p>
-          Reliable information could not be found in the agricultural knowledge base for this diagnosis.
-          Please consult a qualified agricultural expert before taking action.
-        </p>
+        {title}
+        <p>{t("explanation.noEvidence")}</p>
       </div>
     );
   }
@@ -38,35 +61,45 @@ export default function ExplanationSections({ explanation, retrievalStatus }) {
   if (!explanation) {
     return (
       <div className="explanation explanation--empty">
-        <h3 className="explanation__title">Evidence-grounded explanation</h3>
-        <p>The explanation could not be generated right now. The diagnosis and evidence above are still valid.</p>
+        {title}
+        <p>{t("explanation.unavailable")}</p>
       </div>
     );
   }
 
-  const sections = parseSections(explanation);
+  const englishSections = parseSections(explanation);
+  const cautionIndex = englishSections.findIndex((s) => s.heading === CAUTION_HEADING);
 
-  if (sections.length === 0) {
+  if (!translated) {
     return (
       <div className="explanation">
-        <h3 className="explanation__title">Evidence-grounded explanation</h3>
-        <p>{explanation}</p>
+        {title}
+        {(translationStatus === "unavailable" || translationStatus === "failed") && (
+          <p className="explanation__note" role="note">
+            {t("explanation.translationUnavailable")}
+          </p>
+        )}
+        <SectionList text={explanation} cautionIndex={cautionIndex} />
       </div>
     );
   }
 
   return (
     <div className="explanation">
-      <h3 className="explanation__title">Evidence-grounded explanation</h3>
-      {sections.map((section, i) => (
-        <div
-          key={i}
-          className={`explanation__section ${section.heading === CAUTION_HEADING ? "explanation__section--caution" : ""}`}
-        >
-          <h4 className="explanation__heading">{section.heading}</h4>
-          <p className="explanation__body">{section.body}</p>
+      {title}
+      <p className="explanation__note" role="note">
+        {t("explanation.machineTranslated", { backend: translationBackend || "?" })}
+      </p>
+      <div className="explanation__compare">
+        <div lang="en" className="explanation__col">
+          <h4 className="explanation__lang">{t("explanation.englishOriginal")}</h4>
+          <SectionList text={explanation} cautionIndex={cautionIndex} />
         </div>
-      ))}
+        <div className="explanation__col">
+          <h4 className="explanation__lang">{t("explanation.translation")}</h4>
+          <SectionList text={translated} cautionIndex={cautionIndex} />
+        </div>
+      </div>
     </div>
   );
 }
