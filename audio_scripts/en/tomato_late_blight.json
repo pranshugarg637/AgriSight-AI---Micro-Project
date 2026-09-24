@@ -1,0 +1,23 @@
+{
+  "language": "en",
+  "reviewed_by_native_speaker": false,
+  "translation_origin": "authored in English for this build",
+  "kind": "class",
+  "class_key": "Tomato___Late_blight",
+  "slug": "tomato_late_blight",
+  "healthy": false,
+  "source_is_placeholder": true,
+  "sources": [
+    {
+      "file": "tomato_late_blight_guide.pdf",
+      "page": 1,
+      "organization": "Sample Agricultural Extension (Placeholder Source)",
+      "title": "Tomato Late Blight: Identification and Management"
+    }
+  ],
+  "clips": {
+    "name": "Tomato: late blight",
+    "what_it_is": "Late blight is caused by the pathogen Phytophthora infestans. It spreads fast in cool, wet and humid weather.",
+    "safe_steps": "Remove and destroy infected plant parts quickly. Keep enough space between plants and prune them so air can move. Avoid watering over the leaves, especially in the evening. Next season, do not plant tomato or potato in the same place."
+  }
+}

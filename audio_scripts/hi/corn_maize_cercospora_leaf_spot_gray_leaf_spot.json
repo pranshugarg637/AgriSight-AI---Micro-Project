@@ -1,0 +1,17 @@
+{
+  "language": "hi",
+  "reviewed_by_native_speaker": false,
+  "translation_origin": "machine-drafted during the v2 build (not by a native speaker) -- TODO_HUMAN review",
+  "kind": "class",
+  "class_key": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+  "slug": "corn_maize_cercospora_leaf_spot_gray_leaf_spot",
+  "healthy": false,
+  "source_is_placeholder": false,
+  "sources": [],
+  "clips": {
+    "name": "मक्का — सर्कोस्पोरा पत्ती धब्बा (ग्रे लीफ स्पॉट)",
+    "what_it_is": null,
+    "safe_steps": null
+  },
+  "todo_human": "No knowledge-base document covers this class yet: what_it_is/safe_steps must come from a real cited document."
+}

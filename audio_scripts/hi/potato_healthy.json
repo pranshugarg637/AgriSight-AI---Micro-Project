@@ -1,0 +1,16 @@
+{
+  "language": "hi",
+  "reviewed_by_native_speaker": false,
+  "translation_origin": "machine-drafted during the v2 build (not by a native speaker) -- TODO_HUMAN review",
+  "kind": "class",
+  "class_key": "Potato___healthy",
+  "slug": "potato_healthy",
+  "healthy": true,
+  "source_is_placeholder": false,
+  "sources": [],
+  "clips": {
+    "name": "आलू — स्वस्थ पत्ती",
+    "what_it_is": null,
+    "safe_steps": null
+  }
+}

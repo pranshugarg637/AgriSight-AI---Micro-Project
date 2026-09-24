@@ -24,6 +24,38 @@ LLM decision. The ML service rejects any request without the shared
 internal token (`app/security.py`), so it cannot be used to bypass the
 backend's auth and rate limits.
 
+## Farmer Mode (Step 3)
+
+Camera-first, voice-first, low-literacy flow (`frontend/src/farmer/`):
+
+1. **Guided capture** (`CameraCapture.jsx`, `frameQuality.js`,
+   `captureMachine.js`): rear camera via `getUserMedia`; ~3 frames/s are
+   downscaled to 160×120 and checked *on the phone* for brightness,
+   sharpness (variance of the Laplacian), leaf-likeness (share of
+   plant-coloured pixels in the centre) and motion. After
+   `requiredGoodFrames` (4) consecutive good frames one still photo is taken
+   and sent once to `POST /api/farmer/predict`. There is always a big manual
+   shutter button, and a gallery/upload fallback when the camera is denied
+   or unsupported. No video is ever streamed. These thresholds are
+   heuristics for *when to take a photo*, not diagnostic logic
+   (`DEFAULT_THRESHOLDS`).
+2. **Safety gating** (`safetyGating.js`) turns the server result into a list
+   of clip keys: `high` → name + only KB-cited "what it is / safe steps";
+   `low` → "not sure", top + alternative, caution, questions or office;
+   `unreliable` → never a disease name; no evidence → name only, "reliable
+   advice was not found", office.
+3. **Audio** (`audioPlayer.js`): plays pre-generated clips from
+   `audio_clips/`; if a clip is missing, the browser's speech synthesis
+   reads the *same pre-authored script text* and the fallback is logged
+   (console + backend). Live LLM or translation output is never spoken.
+4. **Shopkeeper card**: crop/disease in English and the farmer's language,
+   the confidence band and the photo — no product recommendation.
+
+Scripts live in `audio_scripts/<lang>/` (`_prompts.json` + one file per
+class). Every file carries `reviewed_by_native_speaker`; unreviewed files
+trigger a dev-only banner. `scripts/generate_audio.py` builds the clips
+(espeak-ng / Coqui-compatible model / pre-recorded human audio).
+
 ## System overview (v1 core pipeline)
 
 ```

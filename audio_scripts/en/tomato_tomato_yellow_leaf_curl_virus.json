@@ -1,0 +1,17 @@
+{
+  "language": "en",
+  "reviewed_by_native_speaker": false,
+  "translation_origin": "authored in English for this build",
+  "kind": "class",
+  "class_key": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+  "slug": "tomato_tomato_yellow_leaf_curl_virus",
+  "healthy": false,
+  "source_is_placeholder": false,
+  "sources": [],
+  "clips": {
+    "name": "Tomato: yellow leaf curl virus",
+    "what_it_is": null,
+    "safe_steps": null
+  },
+  "todo_human": "No knowledge-base document covers this class yet: what_it_is/safe_steps must come from a real cited document."
+}

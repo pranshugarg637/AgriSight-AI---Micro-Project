@@ -1,0 +1,17 @@
+{
+  "language": "hi",
+  "reviewed_by_native_speaker": false,
+  "translation_origin": "machine-drafted during the v2 build (not by a native speaker) -- TODO_HUMAN review",
+  "kind": "class",
+  "class_key": "Grape___Black_rot",
+  "slug": "grape_black_rot",
+  "healthy": false,
+  "source_is_placeholder": false,
+  "sources": [],
+  "clips": {
+    "name": "अंगूर — ब्लैक रॉट (काला सड़न)",
+    "what_it_is": null,
+    "safe_steps": null
+  },
+  "todo_human": "No knowledge-base document covers this class yet: what_it_is/safe_steps must come from a real cited document."
+}

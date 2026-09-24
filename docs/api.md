@@ -54,6 +54,14 @@ the ML service and never written to disk; an anonymous scan row (no image,
 no IP, no location, `user_id = NULL`, `mode = "farmer"`) is recorded for
 monitoring only. The file's magic bytes must match its declared type.
 
+## Farmer-Mode audio (guest)
+
+| Route | Notes |
+|---|---|
+| `GET /api/farmer/audio/:key` | Pre-generated clip. `key` = `<lang>.<slug>.<field>`, e.g. `hi.prompt.cannot_tell`, `hi.tomato_late_blight.name`. `Cache-Control: public, max-age=604800`. `404 clip_missing` is logged; the app then uses the browser's speech synthesis as a flagged fallback. |
+| `GET /api/farmer/audio-scripts/:lang` | Script text for the language: `{prompts, classes:{slug:{class_key, clips:{name, what_it_is, safe_steps}, sources, source_is_placeholder, placeholder_suppressed, reviewed_by_native_speaker}}, unreviewed:[files], available_clips:[keys]}`. When `ENV=production`, text derived only from placeholder documents is removed. |
+| `POST /api/farmer/audio-fallback` | `{key}` -- the client reports that it had to use speech synthesis (logged, nothing stored). |
+
 ## POST /api/predict
 
 Diagnose a plant disease from a leaf image.

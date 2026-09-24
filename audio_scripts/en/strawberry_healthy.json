@@ -1,0 +1,16 @@
+{
+  "language": "en",
+  "reviewed_by_native_speaker": false,
+  "translation_origin": "authored in English for this build",
+  "kind": "class",
+  "class_key": "Strawberry___healthy",
+  "slug": "strawberry_healthy",
+  "healthy": true,
+  "source_is_placeholder": false,
+  "sources": [],
+  "clips": {
+    "name": "Healthy strawberry leaf",
+    "what_it_is": null,
+    "safe_steps": null
+  }
+}

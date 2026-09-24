@@ -1,0 +1,17 @@
+{
+  "language": "hi",
+  "reviewed_by_native_speaker": false,
+  "translation_origin": "machine-drafted during the v2 build (not by a native speaker) -- TODO_HUMAN review",
+  "kind": "class",
+  "class_key": "Tomato___Bacterial_spot",
+  "slug": "tomato_bacterial_spot",
+  "healthy": false,
+  "source_is_placeholder": false,
+  "sources": [],
+  "clips": {
+    "name": "टमाटर — जीवाणु धब्बा रोग (बैक्टीरियल स्पॉट)",
+    "what_it_is": null,
+    "safe_steps": null
+  },
+  "todo_human": "No knowledge-base document covers this class yet: what_it_is/safe_steps must come from a real cited document."
+}

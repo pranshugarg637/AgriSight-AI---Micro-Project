@@ -1,0 +1,17 @@
+{
+  "language": "hi",
+  "reviewed_by_native_speaker": false,
+  "translation_origin": "machine-drafted during the v2 build (not by a native speaker) -- TODO_HUMAN review",
+  "kind": "class",
+  "class_key": "Apple___Cedar_apple_rust",
+  "slug": "apple_cedar_apple_rust",
+  "healthy": false,
+  "source_is_placeholder": false,
+  "sources": [],
+  "clips": {
+    "name": "सेब — सीडर एप्पल रस्ट (गेरुआ)",
+    "what_it_is": null,
+    "safe_steps": null
+  },
+  "todo_human": "No knowledge-base document covers this class yet: what_it_is/safe_steps must come from a real cited document."
+}

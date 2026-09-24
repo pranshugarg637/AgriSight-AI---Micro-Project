@@ -1,0 +1,422 @@
+{
+  "en.apple_apple_scab.name": {
+    "backend": "espeak-ng",
+    "file": "apple_apple_scab/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "375027c97877a660"
+  },
+  "en.apple_black_rot.name": {
+    "backend": "espeak-ng",
+    "file": "apple_black_rot/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "ed40a68c96910854"
+  },
+  "en.apple_cedar_apple_rust.name": {
+    "backend": "espeak-ng",
+    "file": "apple_cedar_apple_rust/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "70cbdd3e58b69473"
+  },
+  "en.apple_healthy.name": {
+    "backend": "espeak-ng",
+    "file": "apple_healthy/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "923670cb6595e2c1"
+  },
+  "en.blueberry_healthy.name": {
+    "backend": "espeak-ng",
+    "file": "blueberry_healthy/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "a26187fe07a015d7"
+  },
+  "en.cherry_including_sour_healthy.name": {
+    "backend": "espeak-ng",
+    "file": "cherry_including_sour_healthy/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "79a9590dbb49d690"
+  },
+  "en.cherry_including_sour_powdery_mildew.name": {
+    "backend": "espeak-ng",
+    "file": "cherry_including_sour_powdery_mildew/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "0e8c8176d5892a5a"
+  },
+  "en.corn_maize_cercospora_leaf_spot_gray_leaf_spot.name": {
+    "backend": "espeak-ng",
+    "file": "corn_maize_cercospora_leaf_spot_gray_leaf_spot/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "b3b2adefb86ab775"
+  },
+  "en.corn_maize_common_rust.name": {
+    "backend": "espeak-ng",
+    "file": "corn_maize_common_rust/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "34e6018bc5aaff72"
+  },
+  "en.corn_maize_healthy.name": {
+    "backend": "espeak-ng",
+    "file": "corn_maize_healthy/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "05a643441204037b"
+  },
+  "en.corn_maize_northern_leaf_blight.name": {
+    "backend": "espeak-ng",
+    "file": "corn_maize_northern_leaf_blight/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "5ebd43d28ee8ac3d"
+  },
+  "en.grape_black_rot.name": {
+    "backend": "espeak-ng",
+    "file": "grape_black_rot/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "f607f99b0edbfee8"
+  },
+  "en.grape_esca_black_measles.name": {
+    "backend": "espeak-ng",
+    "file": "grape_esca_black_measles/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "515d283f525ee461"
+  },
+  "en.grape_healthy.name": {
+    "backend": "espeak-ng",
+    "file": "grape_healthy/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "815f2d86479104eb"
+  },
+  "en.grape_leaf_blight_isariopsis_leaf_spot.name": {
+    "backend": "espeak-ng",
+    "file": "grape_leaf_blight_isariopsis_leaf_spot/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "d607bdced8265201"
+  },
+  "en.orange_haunglongbing_citrus_greening.name": {
+    "backend": "espeak-ng",
+    "file": "orange_haunglongbing_citrus_greening/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "2d6faa077957d351"
+  },
+  "en.peach_bacterial_spot.name": {
+    "backend": "espeak-ng",
+    "file": "peach_bacterial_spot/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "b205b78418fa0ebb"
+  },
+  "en.peach_healthy.name": {
+    "backend": "espeak-ng",
+    "file": "peach_healthy/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "6a54750cc54b3eca"
+  },
+  "en.pepper_bell_bacterial_spot.name": {
+    "backend": "espeak-ng",
+    "file": "pepper_bell_bacterial_spot/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "76a22ab325bb1f19"
+  },
+  "en.pepper_bell_healthy.name": {
+    "backend": "espeak-ng",
+    "file": "pepper_bell_healthy/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "c4bd077d2f59d818"
+  },
+  "en.potato_early_blight.name": {
+    "backend": "espeak-ng",
+    "file": "potato_early_blight/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "8710989e784237d6"
+  },
+  "en.potato_healthy.name": {
+    "backend": "espeak-ng",
+    "file": "potato_healthy/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "8ad61b5925edd51f"
+  },
+  "en.potato_late_blight.name": {
+    "backend": "espeak-ng",
+    "file": "potato_late_blight/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "33353bbcac5cb0a3"
+  },
+  "en.prompt.alternative_intro": {
+    "backend": "espeak-ng",
+    "file": "prompt/alternative_intro.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "9214ef751828a523"
+  },
+  "en.prompt.ask_questions": {
+    "backend": "espeak-ng",
+    "file": "prompt/ask_questions.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "4dcdb61f2ce945ae"
+  },
+  "en.prompt.camera_denied": {
+    "backend": "espeak-ng",
+    "file": "prompt/camera_denied.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "5b920491a3b3f437"
+  },
+  "en.prompt.cannot_tell": {
+    "backend": "espeak-ng",
+    "file": "prompt/cannot_tell.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "3dadf95496abb015"
+  },
+  "en.prompt.captured": {
+    "backend": "espeak-ng",
+    "file": "prompt/captured.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "3c006a72221e76c3"
+  },
+  "en.prompt.come_closer": {
+    "backend": "espeak-ng",
+    "file": "prompt/come_closer.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "5f1bb0e6f65c9257"
+  },
+  "en.prompt.healthy_note": {
+    "backend": "espeak-ng",
+    "file": "prompt/healthy_note.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "763fd2f646fa2148"
+  },
+  "en.prompt.hold_steady": {
+    "backend": "espeak-ng",
+    "file": "prompt/hold_steady.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "e886f37c9b16c8f7"
+  },
+  "en.prompt.location_consent": {
+    "backend": "espeak-ng",
+    "file": "prompt/location_consent.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "29a8b6df200a4627"
+  },
+  "en.prompt.low_light": {
+    "backend": "espeak-ng",
+    "file": "prompt/low_light.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "0e4ea92f3a82eb6f"
+  },
+  "en.prompt.network_error": {
+    "backend": "espeak-ng",
+    "file": "prompt/network_error.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "1141caa127eda3b8"
+  },
+  "en.prompt.no_advice_found": {
+    "backend": "espeak-ng",
+    "file": "prompt/no_advice_found.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "671556f8061e0766"
+  },
+  "en.prompt.no_leaf": {
+    "backend": "espeak-ng",
+    "file": "prompt/no_leaf.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "ac2f4b7c850b1e37"
+  },
+  "en.prompt.no_shops_found": {
+    "backend": "espeak-ng",
+    "file": "prompt/no_shops_found.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "a694d5b41fce5df2"
+  },
+  "en.prompt.not_a_leaf": {
+    "backend": "espeak-ng",
+    "file": "prompt/not_a_leaf.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "13647176d0f625d3"
+  },
+  "en.prompt.offline_queued": {
+    "backend": "espeak-ng",
+    "file": "prompt/offline_queued.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "44ba65bdfbae9c1a"
+  },
+  "en.prompt.offline_result": {
+    "backend": "espeak-ng",
+    "file": "prompt/offline_result.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "b4daefb68e9aeb26"
+  },
+  "en.prompt.result_is": {
+    "backend": "espeak-ng",
+    "file": "prompt/result_is.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "d50749834b717917"
+  },
+  "en.prompt.safe_steps_intro": {
+    "backend": "espeak-ng",
+    "file": "prompt/safe_steps_intro.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "6974bd8e5d4fbeb9"
+  },
+  "en.prompt.seek_expert": {
+    "backend": "espeak-ng",
+    "file": "prompt/seek_expert.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "609f654a5a35f6ec"
+  },
+  "en.prompt.stock_disclaimer": {
+    "backend": "espeak-ng",
+    "file": "prompt/stock_disclaimer.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "e372ff060e9e105b"
+  },
+  "en.prompt.sure_high": {
+    "backend": "espeak-ng",
+    "file": "prompt/sure_high.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "482bcb6287070cf4"
+  },
+  "en.prompt.try_again": {
+    "backend": "espeak-ng",
+    "file": "prompt/try_again.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "b5fc2e92053e7af4"
+  },
+  "en.prompt.uncertain_caution": {
+    "backend": "espeak-ng",
+    "file": "prompt/uncertain_caution.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "8b17a0ea1301a896"
+  },
+  "en.prompt.uncertain_intro": {
+    "backend": "espeak-ng",
+    "file": "prompt/uncertain_intro.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "afff1e1933d5a936"
+  },
+  "en.prompt.unsupported_crop": {
+    "backend": "espeak-ng",
+    "file": "prompt/unsupported_crop.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "975d966819d9d706"
+  },
+  "en.prompt.visit_office": {
+    "backend": "espeak-ng",
+    "file": "prompt/visit_office.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "25a24bd9611ee19c"
+  },
+  "en.prompt.where_help": {
+    "backend": "espeak-ng",
+    "file": "prompt/where_help.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "5a8dd08a55cbd77e"
+  },
+  "en.raspberry_healthy.name": {
+    "backend": "espeak-ng",
+    "file": "raspberry_healthy/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "656e055f44e65651"
+  },
+  "en.soybean_healthy.name": {
+    "backend": "espeak-ng",
+    "file": "soybean_healthy/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "63279333f9246561"
+  },
+  "en.squash_powdery_mildew.name": {
+    "backend": "espeak-ng",
+    "file": "squash_powdery_mildew/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "3b85831927366e1a"
+  },
+  "en.strawberry_healthy.name": {
+    "backend": "espeak-ng",
+    "file": "strawberry_healthy/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "c0b99c87677c217d"
+  },
+  "en.strawberry_leaf_scorch.name": {
+    "backend": "espeak-ng",
+    "file": "strawberry_leaf_scorch/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "7251f22c9089e2f5"
+  },
+  "en.tomato_bacterial_spot.name": {
+    "backend": "espeak-ng",
+    "file": "tomato_bacterial_spot/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "fa75c35dd7636783"
+  },
+  "en.tomato_early_blight.name": {
+    "backend": "espeak-ng",
+    "file": "tomato_early_blight/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "f548f5b26f226813"
+  },
+  "en.tomato_early_blight.safe_steps": {
+    "backend": "espeak-ng",
+    "file": "tomato_early_blight/safe_steps.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "7165ba622a11f9c1"
+  },
+  "en.tomato_early_blight.what_it_is": {
+    "backend": "espeak-ng",
+    "file": "tomato_early_blight/what_it_is.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "79daf7ce3ff6e97d"
+  },
+  "en.tomato_healthy.name": {
+    "backend": "espeak-ng",
+    "file": "tomato_healthy/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "a34f4526b246c343"
+  },
+  "en.tomato_late_blight.name": {
+    "backend": "espeak-ng",
+    "file": "tomato_late_blight/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "16f3b7567ce14fb1"
+  },
+  "en.tomato_late_blight.safe_steps": {
+    "backend": "espeak-ng",
+    "file": "tomato_late_blight/safe_steps.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "a7d105fb9357b963"
+  },
+  "en.tomato_late_blight.what_it_is": {
+    "backend": "espeak-ng",
+    "file": "tomato_late_blight/what_it_is.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "a87bd37bcdc1e524"
+  },
+  "en.tomato_leaf_mold.name": {
+    "backend": "espeak-ng",
+    "file": "tomato_leaf_mold/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "66a64b326ac41547"
+  },
+  "en.tomato_septoria_leaf_spot.name": {
+    "backend": "espeak-ng",
+    "file": "tomato_septoria_leaf_spot/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "8df0864ccc8edf5a"
+  },
+  "en.tomato_spider_mites_two_spotted_spider_mite.name": {
+    "backend": "espeak-ng",
+    "file": "tomato_spider_mites_two_spotted_spider_mite/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "21b2aee0cdc110ec"
+  },
+  "en.tomato_target_spot.name": {
+    "backend": "espeak-ng",
+    "file": "tomato_target_spot/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "7a59cac6247df56e"
+  },
+  "en.tomato_tomato_mosaic_virus.name": {
+    "backend": "espeak-ng",
+    "file": "tomato_tomato_mosaic_virus/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "9f093fedf51befbe"
+  },
+  "en.tomato_tomato_yellow_leaf_curl_virus.name": {
+    "backend": "espeak-ng",
+    "file": "tomato_tomato_yellow_leaf_curl_virus/name.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "eed92798ed3033c4"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "language": "en",
+  "reviewed_by_native_speaker": false,
+  "translation_origin": "authored in English for this build",
+  "kind": "class",
+  "class_key": "Tomato___Early_blight",
+  "slug": "tomato_early_blight",
+  "healthy": false,
+  "source_is_placeholder": true,
+  "sources": [
+    {
+      "file": "tomato_early_blight_guide.pdf",
+      "page": 1,
+      "organization": "Sample Agricultural Extension (Placeholder Source)",
+      "title": "Tomato Early Blight: Identification and Management"
+    }
+  ],
+  "clips": {
+    "name": "Tomato: early blight",
+    "what_it_is": "Early blight is a fungal disease caused by Alternaria solani. It usually starts on older, lower leaves as dark spots with rings, like a target.",
+    "safe_steps": "Remove infected leaves and plant debris. Stake or cage the plants so air can move. Use mulch so soil does not splash onto the lower leaves. Grow other crops in this field for two to three years."
+  }
+}

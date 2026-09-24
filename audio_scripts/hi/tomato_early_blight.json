@@ -1,0 +1,23 @@
+{
+  "language": "hi",
+  "reviewed_by_native_speaker": false,
+  "translation_origin": "machine-drafted during the v2 build (not by a native speaker) -- TODO_HUMAN review",
+  "kind": "class",
+  "class_key": "Tomato___Early_blight",
+  "slug": "tomato_early_blight",
+  "healthy": false,
+  "source_is_placeholder": true,
+  "sources": [
+    {
+      "file": "tomato_early_blight_guide.pdf",
+      "page": 1,
+      "organization": "Sample Agricultural Extension (Placeholder Source)",
+      "title": "Tomato Early Blight: Identification and Management"
+    }
+  ],
+  "clips": {
+    "name": "टमाटर — अगेती झुलसा (अर्ली ब्लाइट)",
+    "what_it_is": "अगेती झुलसा एक फफूंद रोग है जो ऑल्टरनेरिया सोलानी से होता है। यह आमतौर पर पुरानी, नीचे की पत्तियों पर गोल छल्लों वाले गहरे धब्बों के रूप में शुरू होता है, जैसे निशाना।",
+    "safe_steps": "बीमार पत्तियाँ और पौधों का कचरा हटाएँ। पौधों को डंडे या पिंजरे का सहारा दें ताकि हवा चल सके। मल्च (पलवार) बिछाएँ ताकि मिट्टी उछलकर नीचे की पत्तियों पर न पड़े। इस खेत में दो से तीन साल तक दूसरी फ़सलें उगाएँ।"
+  }
+}

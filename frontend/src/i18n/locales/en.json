@@ -138,5 +138,45 @@
     "failed": "Could not complete diagnosis.",
     "empty": "Upload a leaf photo to begin. The system will classify it, explain its reasoning with Grad-CAM, and ground its recommendation in retrieved agricultural evidence.",
     "networkError": "Could not reach the server. Please check your connection and try again."
+  },
+  "farmer": {
+    "cameraView": "Camera view",
+    "takePhoto": "Take photo",
+    "checkLeaf": "Check a leaf",
+    "choosePhoto": "Choose a photo",
+    "checking": "Checking the leaf…",
+    "replay": "Play again",
+    "startOver": "Start over",
+    "maybe": "Maybe:",
+    "cannotTell": "Could not tell from this photo",
+    "yourPhoto": "Your photo",
+    "showHeat": "Show where the model looked",
+    "showPhoto": "Show my photo",
+    "answerQuestions": "Answer 3 questions",
+    "findOffice": "Agriculture office near me",
+    "findHelp": "Help near me",
+    "showShopkeeper": "Show to shopkeeper",
+    "tooMany": "Too many photos. Please wait one minute.",
+    "networkError": "No internet connection. Please try again.",
+    "cameraUnavailable": "Camera not available. Choose a photo instead.",
+    "cue": {
+      "no_leaf": "Show one leaf",
+      "come_closer": "Come closer",
+      "low_light": "More light",
+      "hold_steady": "Hold still",
+      "steady": "Good — hold still",
+      "captured": "Photo taken"
+    },
+    "level": {
+      "high": "Fairly sure",
+      "low": "Not sure",
+      "unreliable": "Cannot tell"
+    },
+    "shopkeeper": {
+      "title": "Card for shopkeeper",
+      "possible": "possible, not confirmed",
+      "notIdentified": "Disease not identified",
+      "note": "Result from the AgriSight AI app (photo check). Not a confirmed diagnosis. No product is recommended by this app — please advise according to local agriculture office guidance."
+    }
   }
 }

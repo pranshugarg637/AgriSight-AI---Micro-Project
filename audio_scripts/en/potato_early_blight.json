@@ -1,0 +1,17 @@
+{
+  "language": "en",
+  "reviewed_by_native_speaker": false,
+  "translation_origin": "authored in English for this build",
+  "kind": "class",
+  "class_key": "Potato___Early_blight",
+  "slug": "potato_early_blight",
+  "healthy": false,
+  "source_is_placeholder": false,
+  "sources": [],
+  "clips": {
+    "name": "Potato: early blight",
+    "what_it_is": null,
+    "safe_steps": null
+  },
+  "todo_human": "No knowledge-base document covers this class yet: what_it_is/safe_steps must come from a real cited document."
+}

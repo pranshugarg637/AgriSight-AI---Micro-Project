@@ -1,0 +1,23 @@
+{
+  "language": "hi",
+  "reviewed_by_native_speaker": false,
+  "translation_origin": "machine-drafted during the v2 build (not by a native speaker) -- TODO_HUMAN review",
+  "kind": "class",
+  "class_key": "Tomato___Late_blight",
+  "slug": "tomato_late_blight",
+  "healthy": false,
+  "source_is_placeholder": true,
+  "sources": [
+    {
+      "file": "tomato_late_blight_guide.pdf",
+      "page": 1,
+      "organization": "Sample Agricultural Extension (Placeholder Source)",
+      "title": "Tomato Late Blight: Identification and Management"
+    }
+  ],
+  "clips": {
+    "name": "टमाटर — पछेती झुलसा (लेट ब्लाइट)",
+    "what_it_is": "पछेती झुलसा फ़ाइटोफ़्थोरा इन्फ़ेस्टैंस नाम के रोगाणु से होता है। यह ठंडे, गीले और नम मौसम में तेज़ी से फैलता है।",
+    "safe_steps": "बीमार पौधों के हिस्से जल्दी हटाकर नष्ट करें। पौधों के बीच पर्याप्त दूरी रखें और छँटाई करें ताकि हवा चल सके। पत्तियों के ऊपर से पानी न दें, ख़ासकर शाम को। अगले मौसम में उसी जगह टमाटर या आलू न लगाएँ।"
+  }
+}
