@@ -1,0 +1,18 @@
+{
+  "_comment": "TEMPLATE ONLY -- every value below is a placeholder, not real data. Copy to <state_slug>.json (e.g. uttar_pradesh.json) and fill from an official directory. Files starting with '_' are ignored by the loader.",
+  "state": "EXAMPLE STATE (not real)",
+  "centers": [
+    {
+      "name": "EXAMPLE Krishi Vigyan Kendra (not real)",
+      "name_local": "",
+      "type": "kvk",
+      "district": "EXAMPLE DISTRICT",
+      "address": "",
+      "phone": "",
+      "lat": null,
+      "lng": null,
+      "source_url": "https://<official directory page you copied this from>",
+      "verified_on": "YYYY-MM-DD"
+    }
+  ]
+}

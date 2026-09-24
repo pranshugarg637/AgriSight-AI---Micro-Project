@@ -177,6 +177,27 @@
       "possible": "possible, not confirmed",
       "notIdentified": "Disease not identified",
       "note": "Result from the AgriSight AI app (photo check). Not a confirmed diagnosis. No product is recommended by this app — please advise according to local agriculture office guidance."
+    },
+    "help": {
+      "consent": "To find help near you, the app needs your location one time. It is not saved. Allow?",
+      "allow": "Yes, use my location",
+      "deny": "No, I will choose my district",
+      "locationFailed": "Could not get your location. Please choose your district.",
+      "state": "State",
+      "district": "District",
+      "showOffices": "Show offices",
+      "noOfficeData": "No agriculture office list for your area has been added yet. Please ask at your block or district agriculture office.",
+      "village": "Or type your village or town",
+      "searchVillage": "Find shops near this place",
+      "placeNotFound": "Place not found. Check the spelling.",
+      "searchFailed": "Search is not available right now.",
+      "noShops": "No shops were found nearby. Here is the nearest agriculture office.",
+      "offices": "Agriculture offices",
+      "shops": "Agri-input shops",
+      "stockDisclaimer": "A shop in this list may not have the product you need. Listing is not a recommendation.",
+      "call": "Call",
+      "map": "Map",
+      "unnamedShop": "Shop (name not listed)"
     }
   }
 }

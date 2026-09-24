@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
-import morgan from "morgan";
 
 import { config } from "./config/index.js";
 import { getDb } from "./db/knex.js";
@@ -11,6 +10,7 @@ import statusRoutes from "./routes/status.js";
 import authRoutes from "./routes/auth.js";
 import farmerRoutes from "./routes/farmer.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
+import { requestLogger } from "./middleware/requestLogger.js";
 
 /**
  * @param {object} [options]
@@ -23,13 +23,7 @@ export function createApp(options = {}) {
   app.set("trust proxy", config.trustProxy);
   app.disable("x-powered-by");
   app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" } }));
-  // Never log query strings (they can carry coordinates in Farmer Mode).
-  morgan.token("path-only", (req) => req.originalUrl.split("?")[0]);
-  app.use(
-    morgan(':remote-addr - :method :path-only :status :res[content-length] - :response-time ms', {
-      skip: () => process.env.NODE_ENV === "test",
-    })
-  );
+  app.use(options.requestLogger || requestLogger());
   app.use(
     cors({
       origin: config.corsOrigins,

@@ -45,3 +45,20 @@ one says exactly what to do. Nothing here was invented to fill the gap.
   `sources`. The two tomato-blight scripts that do have steps come from the
   **placeholder** PDFs (`source_is_placeholder: true`) and are removed
   automatically when `ENV=production` — rewrite them from a real source.
+
+## Step 4 — Help finder
+
+- [ ] **Fill `data/help_centers/`** (currently no real entries, by design).
+  Follow `data/help_centers/README.md`: one file per state, entries copied
+  from official directories (ICAR/ATARI KVK list, state agriculture
+  department district offices), each with `source_url` and `verified_on`.
+  Add `lat`/`lng` where the directory provides them so "nearest office" works.
+- [ ] Optionally add a verified national helpline as a `type: "helpline"`
+  entry (with its official source page) — not hard-coded because it could
+  not be verified during the build.
+- [ ] Set `PROVIDER_USER_AGENT` to include a real contact e-mail (OSM usage
+  policy) before any public deployment; for heavy use, run your own
+  Overpass/Nominatim instance or switch to `SHOP_PROVIDER=google` with a key.
+- [ ] Live Overpass/Nominatim calls were **not** verified from the build
+  environment (no network); test once on a connected machine:
+  `curl "http://localhost:5000/api/farmer/shops?lat=26.85&lng=80.95"`.

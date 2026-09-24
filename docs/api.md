@@ -62,6 +62,22 @@ monitoring only. The file's magic bytes must match its declared type.
 | `GET /api/farmer/audio-scripts/:lang` | Script text for the language: `{prompts, classes:{slug:{class_key, clips:{name, what_it_is, safe_steps}, sources, source_is_placeholder, placeholder_suppressed, reviewed_by_native_speaker}}, unreviewed:[files], available_clips:[keys]}`. When `ENV=production`, text derived only from placeholder documents is removed. |
 | `POST /api/farmer/audio-fallback` | `{key}` -- the client reports that it had to use speech synthesis (logged, nothing stored). |
 
+## Nearby help (guest, Step 4)
+
+Coordinates are used for the single request: never stored, never written to
+logs (access logs omit query strings and client IPs on `/api/farmer/*`),
+rounded to ~110 m before being sent to the configured provider only.
+
+| Route | Response |
+|---|---|
+| `GET /api/farmer/shops?lat=&lng=` | `{provider, attribution, shops:[{id,name,kind,lat,lng,phone,address,distance_m,map_url,source}], offices:[nearest curated centres], stock_disclaimer, office_fallback, provider_error, cached}` |
+| `GET /api/farmer/help-centers/index` | `{states:[{state_slug, state, districts[]}]}` from `data/help_centers/*.json` |
+| `GET /api/farmer/help-centers?state=&district=` or `?lat=&lng=` | `{centers:[...]}` curated offices / KVKs (each with `source_url`, `verified_on`) |
+| `GET /api/farmer/geocode?q=` | `{places:[{name,lat,lng}], attribution}` (Nominatim, India only) |
+
+A provider outage returns `200` with `shops: []`, `provider_error: true`,
+`office_fallback: true`.
+
 ## POST /api/predict
 
 Diagnose a plant disease from a leaf image.

@@ -87,3 +87,4 @@
 .fq__yes, .fq__no, .fq__unsure { width: 120px; height: 120px; border-radius: 24px; font-size: 3rem; }
 .fq__yes { background: #2f7d32; }
 .fq__no { background: #8a2a1e; }
+.fhelp__input { display:block; font: inherit; font-size: 1.2rem; padding: 0.6rem; border-radius: 12px; min-height: 56px; width: min(92vw, 420px); margin-top: 0.3rem; }

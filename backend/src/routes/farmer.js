@@ -6,6 +6,10 @@ import { recordScan } from "../repositories/scans.js";
 import { pickLanguage } from "./predict.js";
 import { loadScriptBundle, resolveClip } from "../services/audioScripts.js";
 import { config } from "../config/index.js";
+import { createShopProvider, ShopFinder } from "../services/shops/index.js";
+import { HelpCenterDirectory } from "../services/helpCenters.js";
+import { NominatimGeocoder } from "../services/geocoder.js";
+import { isValidLatLng } from "../services/geo.js";
 
 /**
  * Guest / Farmer Mode endpoints -- no login, no personal data, no history.
@@ -74,6 +78,65 @@ export default function farmerRoutes(db, deps = {}) {
     const key = String(req.body?.key || "").slice(0, 140);
     if (/^[a-z0-9_.]+$/.test(key)) console.warn(`[audio] web-speech fallback used for ${key}`);
     return res.status(204).end();
+  });
+
+  // --- Nearby help (Step 4) -------------------------------------------
+  // Coordinates are used for this request only: never stored, never logged
+  // (request logs omit query strings), rounded to ~110 m before being sent
+  // to the single configured provider.
+  const shopFinder = deps.shopFinder || new ShopFinder(createShopProvider());
+  const helpDirectory = deps.helpDirectory || new HelpCenterDirectory(config.help.helpCentersDir);
+  const geocoder = deps.geocoder || new NominatimGeocoder();
+
+  const readLatLng = (req) => {
+    const lat = parseFloat(req.query.lat);
+    const lng = parseFloat(req.query.lng);
+    return isValidLatLng(lat, lng) ? { lat, lng } : null;
+  };
+
+  router.get("/shops", async (req, res, next) => {
+    try {
+      const point = readLatLng(req);
+      if (!point) return res.status(400).json({ error: "validation_error", detail: "lat and lng are required." });
+      const result = await shopFinder.find(point.lat, point.lng);
+      const offices = helpDirectory.nearest(point.lat, point.lng, 3);
+      res.set("Cache-Control", "no-store");
+      return res.json({
+        ...result,
+        offices,
+        stock_disclaimer: "A listing does not guarantee that a product is in stock.",
+        office_fallback: result.shops.length === 0,
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  router.get("/help-centers/index", (req, res) => {
+    res.json({ states: helpDirectory.index() });
+  });
+
+  router.get("/help-centers", (req, res) => {
+    const point = readLatLng(req);
+    if (point) {
+      res.set("Cache-Control", "no-store");
+      return res.json({ centers: helpDirectory.nearest(point.lat, point.lng, 5) });
+    }
+    const state = String(req.query.state || "");
+    if (!/^[a-z0-9_-]{1,60}$/.test(state)) return res.status(400).json({ error: "validation_error", detail: "state or lat/lng required." });
+    return res.json({ centers: helpDirectory.byDistrict(state, req.query.district) });
+  });
+
+  router.get("/geocode", async (req, res) => {
+    const q = String(req.query.q || "").trim();
+    if (q.length < 2 || q.length > 120) return res.status(400).json({ error: "validation_error", detail: "q (2-120 chars) required." });
+    try {
+      const places = await geocoder.search(q);
+      return res.json({ places, attribution: geocoder.attribution });
+    } catch (err) {
+      console.warn(`[geocode] provider failed: ${err.code || err.name || "error"}`);
+      return res.status(502).json({ error: "provider_unavailable", detail: "Place search is unavailable right now." });
+    }
   });
 
   if (deps.extend) deps.extend(router);

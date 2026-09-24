@@ -5,7 +5,9 @@ import multer from "multer";
  * (Section 26). Logs full detail server-side only.
  */
 export function errorHandler(err, req, res, next) {
-  console.error(`[error] ${req.method} ${req.originalUrl}:`, err);
+  // Path only: query strings can carry coordinates (Farmer Mode help finder).
+  const pathOnly = String(req.originalUrl || "").split("?")[0];
+  console.error(`[error] ${req.method} ${pathOnly}:`, err);
 
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {

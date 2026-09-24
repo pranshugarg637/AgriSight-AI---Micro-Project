@@ -56,6 +56,18 @@ class). Every file carries `reviewed_by_native_speaker`; unreviewed files
 trigger a dev-only banner. `scripts/generate_audio.py` builds the clips
 (espeak-ng / Coqui-compatible model / pre-recorded human audio).
 
+## Nearby help finder (Step 4)
+
+`backend/src/services/shops/` defines a provider interface
+(`search({lat,lng,radiusM,limit})`) with `OverpassShopProvider` (default,
+no key) and `GooglePlacesShopProvider`. `ShopFinder` adds coordinate
+rounding, a TTL cache and outage isolation. Curated agriculture offices /
+KVKs come from `data/help_centers/<state>.json` (`HelpCenterDirectory`),
+which rejects any entry without `source_url` + `verified_on`; the repo ships
+none. For `low`/`unreliable` results and when no shop is found, offices are
+shown first. The UI and audio state that a listing does not guarantee stock,
+and no product is ever suggested.
+
 ## System overview (v1 core pipeline)
 
 ```
