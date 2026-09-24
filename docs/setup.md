@@ -168,7 +168,8 @@ curl http://localhost:11434/api/tags
 uvicorn app.main:app --reload --port 8000
 ```
 
-Visit http://localhost:8000/api/health -- you should see
+The ML service now only answers requests that carry the internal token, so
+check it through the backend instead: http://localhost:5000/api/health -- you should see
 `model_loaded: true`, `knowledge_base_ready: true`, `llm_reachable: true`
 once all three setup steps above are complete.
 
@@ -177,11 +178,27 @@ once all three setup steps above are complete.
 ```bash
 cd backend
 npm install
+npm run migrate      # creates backend/data/agrisight.sqlite3 (also runs automatically on start)
+npm run seed         # optional, dev only: demo user / expert / admin accounts (password printed once)
 npm run dev
 ```
 
 The backend listens on port 5000 by default and proxies to the ML service
 at `ML_SERVICE_URL` (default `http://localhost:8000`).
+
+**v2 required settings** (already in `.env.example`):
+
+- `ML_INTERNAL_TOKEN` -- the *same* value must be visible to the backend and
+  the ML service (both read the root `.env`). Without it the ML service
+  answers every `/api` call with `503`/`401`.
+- `JWT_SECRET` -- if missing in development a random value is used and all
+  sessions end when the backend restarts; in `ENV=production` the backend
+  refuses to start.
+
+**Windows note:** `better-sqlite3` ships prebuilt binaries for current Node
+LTS versions on Windows. If `npm install` tries to compile it, install the
+"Desktop development with C++" workload (Visual Studio Build Tools) or use a
+Node LTS version, then re-run `npm install`.
 
 ## 5. Set up the React frontend
 
@@ -219,4 +236,7 @@ npm test
 | `/api/health` shows `llm_reachable: false` | Ollama not running, or model not pulled | `ollama serve` and `ollama pull llama3.2` |
 | Frontend can't reach backend | Wrong `VITE_BACKEND_URL` | Check `frontend/.env` |
 | Backend can't reach ML service | Wrong `ML_SERVICE_URL`, or ML service not running | Check `.env` and confirm `uvicorn` is running |
+| Every diagnosis fails with 401/503 from the ML service | `ML_INTERNAL_TOKEN` missing or different between backend and ML service | Set the same value in the root `.env`, restart both |
+| Signed out after every backend restart | `JWT_SECRET` not set (dev uses a random one) | Set `JWT_SECRET` in `.env` |
+| Login works but refresh fails on http://localhost | Browser refuses `Secure` cookie on plain http | Use Chrome/Firefox on `localhost`, or set `COOKIE_SECURE=false` for local dev only |
 | Dataset validation error | Folder structure doesn't match expected layout | See step 2.4 above |

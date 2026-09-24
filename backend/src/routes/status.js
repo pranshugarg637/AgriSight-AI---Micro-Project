@@ -1,12 +1,11 @@
 import express from "express";
-import fetch from "node-fetch";
-import { config } from "../config/index.js";
+import { mlFetch } from "../services/mlClient.js";
 
 const router = express.Router();
 
 async function proxyGet(mlPath, res, next) {
   try {
-    const response = await fetch(`${config.mlServiceUrl}${mlPath}`, { method: "GET" });
+    const response = await mlFetch(mlPath);
     const contentType = response.headers.get("content-type") || "";
 
     if (contentType.includes("text/csv")) {
@@ -23,11 +22,15 @@ async function proxyGet(mlPath, res, next) {
   }
 }
 
-router.get("/health", async (req, res, next) => {
+router.get("/health", async (req, res) => {
   try {
-    const mlHealth = await fetch(`${config.mlServiceUrl}/api/health`).then((r) => r.json());
+    const response = await mlFetch("/api/health", { timeoutMs: 10000 });
+    const mlHealth = await response.json();
+    if (!response.ok) {
+      return res.status(200).json({ backend: "ok", ml_service: { status: "error", detail: mlHealth?.detail || "ML service error." } });
+    }
     return res.status(200).json({ backend: "ok", ml_service: mlHealth });
-  } catch (err) {
+  } catch {
     return res.status(200).json({
       backend: "ok",
       ml_service: { status: "unreachable", detail: "Could not reach the ML service." },

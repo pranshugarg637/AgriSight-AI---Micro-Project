@@ -1,56 +1,37 @@
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+import { BACKEND_URL, ApiError, parseResponse, authFetch } from "./http";
 
-class ApiError extends Error {
-  constructor(message, status, detail) {
-    super(message);
-    this.status = status;
-    this.detail = detail;
-  }
-}
-
-async function handleResponse(response) {
-  let data = null;
-  try {
-    data = await response.json();
-  } catch {
-    // non-JSON response
-  }
-  if (!response.ok) {
-    const detail = data?.detail || data?.error || "Something went wrong. Please try again.";
-    throw new ApiError(detail, response.status, data);
-  }
-  return data;
-}
-
-export async function predictDisease(file) {
+/**
+ * Account-mode diagnosis (authenticated). `options.language` asks the ML
+ * service for a translated explanation; `options.plotId` attaches the scan.
+ */
+export async function predictDisease(file, options = {}) {
   const formData = new FormData();
   formData.append("file", file);
+  if (options.language) formData.append("language", options.language);
+  if (options.plotId) formData.append("plot_id", String(options.plotId));
 
-  const response = await fetch(`${BACKEND_URL}/api/predict`, {
-    method: "POST",
-    body: formData,
-  });
-  return handleResponse(response);
+  const response = await authFetch("/api/predict", { method: "POST", body: formData });
+  return parseResponse(response);
 }
 
 export async function getHealth() {
   const response = await fetch(`${BACKEND_URL}/api/health`);
-  return handleResponse(response);
+  return parseResponse(response);
 }
 
 export async function getModelStatus() {
   const response = await fetch(`${BACKEND_URL}/api/model-status`);
-  return handleResponse(response);
+  return parseResponse(response);
 }
 
 export async function getKnowledgeBaseStatus() {
   const response = await fetch(`${BACKEND_URL}/api/knowledge-base-status`);
-  return handleResponse(response);
+  return parseResponse(response);
 }
 
 export async function getPredictionHistory(limit = 100) {
   const response = await fetch(`${BACKEND_URL}/api/analytics/history?limit=${limit}`);
-  return handleResponse(response);
+  return parseResponse(response);
 }
 
 export { ApiError };

@@ -9,16 +9,65 @@ Two HTTP layers exist:
   all ML/RAG/LLM logic. Interactive docs available at
   `http://localhost:8000/docs` (FastAPI's built-in Swagger UI) when running.
 
-All endpoints below are described at the **backend** path (`/api/...`); the
-ML service exposes the same paths directly, which the backend proxies
-transparently.
+All endpoints below are described at the **backend** path (`/api/...`).
+
+> **v2 service boundary.** The ML service is internal-only: every `/api/*`
+> request to it must carry `X-Internal-Token: <ML_INTERNAL_TOKEN>`, which only
+> the backend sends. Browsers and other clients get `401`. `GET /healthz` (no
+> data) is the only unauthenticated ML route, for container liveness probes.
+
+## v2 access tiers
+
+| Tier | Prefix | Auth | Limits |
+|---|---|---|---|
+| Guest / Farmer Mode | `/api/farmer/*` | none | `FARMER_PREDICT_RATE_LIMIT_PER_MIN` (6) photos/min/IP, `FARMER_RATE_LIMIT_PER_MIN` (60) req/min/IP, `FARMER_MAX_IMAGE_SIZE_MB` (4 MB); photo never stored; no personal data |
+| Auth | `/api/auth/*` | – / cookie / Bearer | `AUTH_RATE_LIMIT_MAX` (20) per 15 min per IP |
+| Account Mode | `/api/predict`, `/api/v2/*` | `Authorization: Bearer <access token>` | `PREDICT_RATE_LIMIT_PER_MIN` (20) |
+
+## Authentication (JWT)
+
+Access tokens are HS256 JWTs (`ACCESS_TOKEN_TTL_SECONDS`, default 15 min),
+sent as `Authorization: Bearer ...`. Refresh tokens are random 48-byte values
+stored **hashed** in `refresh_tokens`, delivered only as an `httpOnly`,
+`Secure`, `SameSite=Strict` cookie (`agrisight_rt`, path `/api/auth`), and
+rotated on every use. Presenting an already-rotated refresh token is treated
+as theft: the whole token family is revoked.
+
+| Route | Body | Success | Notes |
+|---|---|---|---|
+| `POST /api/auth/register` | `{email, password (10–72 chars), preferred_language?}` | `202 {status:"accepted", detail}` | Identical response whether or not the email exists; role is always `user`. |
+| `POST /api/auth/login` | `{email, password}` | `200 {access_token, token_type, expires_in, user}` + refresh cookie | Any failure → `401 {"error":"invalid_credentials"}`. After `AUTH_MAX_FAILED_LOGINS` failures the account is locked for `AUTH_LOCKOUT_MINUTES` (same generic 401). |
+| `POST /api/auth/refresh` | – (cookie) | `200` same shape as login + new cookie | `401 invalid_refresh` for unknown/expired/reused tokens. |
+| `POST /api/auth/logout` | – (cookie) | `204` | Revokes the token family and clears the cookie. |
+| `GET /api/auth/me` | – | `200 {user}` | `401 token_expired` tells the client to refresh. |
+| `PATCH /api/auth/me` | `{preferred_language?, store_location_opt_in?}` | `200 {user}` | Opting out of location storage also erases stored plot coordinates. |
+| `DELETE /api/auth/me` | – | `204` | Real deletion: user, tokens, plots, scans, follow-ups and stored images. |
+
+Roles: `user` (default), `expert`, `admin`. Demo accounts for each role:
+`cd backend && npm run seed` (dev only).
+
+## POST /api/farmer/predict (guest)
+
+Same request and response as `POST /api/predict` below, but no login.
+Optional form field `language` (`en`, `hi`, ...). The image is forwarded to
+the ML service and never written to disk; an anonymous scan row (no image,
+no IP, no location, `user_id = NULL`, `mode = "farmer"`) is recorded for
+monitoring only. The file's magic bytes must match its declared type.
 
 ## POST /api/predict
 
 Diagnose a plant disease from a leaf image.
 
-**Request**: `multipart/form-data` with a single field `file` (JPEG, PNG, or
-WebP, max size per `MAX_IMAGE_SIZE_MB`, default 8MB).
+**v2: requires `Authorization: Bearer <access token>`** (Account Mode). The
+request/response contract is otherwise unchanged; v2 only *adds* fields
+(`scan_id`, `plot_id`, and the fields documented in later sections).
+Unauthenticated callers get `401` and should use `POST /api/farmer/predict`.
+The scan is saved to the user's plot (`plot_id` form field, or the default
+plot "My field"), and the image is stored with all EXIF/GPS metadata removed.
+
+**Request**: `multipart/form-data` with field `file` (JPEG, PNG, or
+WebP, max size per `MAX_IMAGE_SIZE_MB`, default 8MB), optional `language`,
+optional `plot_id`.
 
 **Response** (`200 OK`):
 
@@ -61,6 +110,7 @@ WebP, max size per `MAX_IMAGE_SIZE_MB`, default 8MB).
 | Status | Meaning |
 |---|---|
 | `400` | No file provided |
+| `401` | Missing/expired access token (v2) |
 | `422` | Invalid/unusable image (wrong type, too small, too blurry, corrupt) |
 | `422` | Unsupported file type (caught by backend before reaching the ML service) |
 | `503` | Model not trained/loaded yet |

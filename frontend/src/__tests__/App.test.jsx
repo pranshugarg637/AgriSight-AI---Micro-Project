@@ -1,7 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import App from "../App";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
+import DiagnosePage from "../pages/account/DiagnosePage";
 import * as apiClient from "../api/client";
+import { renderWithProviders, DEMO_USER } from "../test-utils";
+
+// v2: the v1 single-page app is now the Account-mode "Diagnose" page
+// (the root route is the landing screen). Assertions are unchanged.
+const App = () => <DiagnosePage />;
+const render = (ui) => renderWithProviders(ui, { route: "/account", user: DEMO_USER });
 
 const HIGH_CONFIDENCE_RESULT = {
   diagnosis: "Late blight",

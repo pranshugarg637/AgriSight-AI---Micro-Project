@@ -1,6 +1,30 @@
 # Architecture
 
-## System overview
+## v2 overview
+
+See `docs/v2-plan.md` for the full v2 design. In short:
+
+```
+React PWA ── Farmer Mode (/api/farmer/*, no login) ─┐
+          └─ Account Mode (JWT, /api/predict, /api/v2/*) ─┤
+                                                         ▼
+Node/Express gateway: auth (JWT + rotating refresh cookie), roles
+  (user/expert/admin), zod validation, per-tier rate limits, DB (Knex:
+  SQLite dev / Postgres), EXIF-stripping image store, help finder,
+  weather risk rules, audio clip serving
+                                                         │ X-Internal-Token
+                                                         ▼
+FastAPI ML service (internal network only): all ML / RAG / LLM /
+  translation / calibration / OOD / symptom-question logic
+```
+
+The layering rule is unchanged: React renders; Node handles HTTP, auth,
+rate limiting, validation and the database; Python owns every ML, RAG and
+LLM decision. The ML service rejects any request without the shared
+internal token (`app/security.py`), so it cannot be used to bypass the
+backend's auth and rate limits.
+
+## System overview (v1 core pipeline)
 
 ```
 React (frontend)

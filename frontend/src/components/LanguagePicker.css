@@ -1,0 +1,31 @@
+.langpick {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+.langpick__btn {
+  font: inherit;
+  font-size: var(--fs-small);
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  min-height: 36px;
+}
+.langpick--large .langpick__btn {
+  font-size: 1.25rem;
+  padding: 0.7rem 1.4rem;
+  min-height: 56px;
+}
+.langpick__btn--active {
+  background: var(--confidence-high);
+  border-color: var(--confidence-high);
+  color: var(--ink-dark);
+  font-weight: 600;
+}
+.langpick__btn:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}

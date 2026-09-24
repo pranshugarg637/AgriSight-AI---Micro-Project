@@ -27,8 +27,8 @@
   --focus-ring: #d8c66a;
 
   /* --- Type --- */
-  --font-display: "Fraunces", "Iowan Old Style", serif;
-  --font-body: "Work Sans", "Segoe UI", sans-serif;
+  --font-display: "Fraunces", "Iowan Old Style", "Noto Serif Devanagari", "Noto Sans Devanagari", "Nirmala UI", "Mangal", serif;
+  --font-body: "Work Sans", "Segoe UI", "Noto Sans Devanagari", "Nirmala UI", "Mangal", "Noto Sans", sans-serif;
   --font-mono: "IBM Plex Mono", "SFMono-Regular", monospace;
 
   --fs-display-lg: clamp(2.2rem, 1.6rem + 2.4vw, 3.4rem);

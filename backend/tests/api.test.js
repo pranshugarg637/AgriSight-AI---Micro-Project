@@ -1,9 +1,9 @@
 import { test, before, after, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import http from "node:http";
+import "./setup-env.js";
 import request from "supertest";
-
-process.env.NODE_ENV = "test";
+import { makeDb, makeUser, login } from "./helpers.js";
 
 let mockMlServer;
 let mockMlPort;
@@ -13,6 +13,11 @@ function startMockMlService() {
   return new Promise((resolve) => {
     mockMlServer = http.createServer((req, res) => {
       res.setHeader("Content-Type", "application/json");
+      // v2: the ML service only answers requests carrying the internal token.
+      if (req.headers["x-internal-token"] !== process.env.ML_INTERNAL_TOKEN) {
+        res.writeHead(401);
+        return res.end(JSON.stringify({ detail: "missing internal token" }));
+      }
 
       if (req.url === "/api/health") {
         res.writeHead(200);
@@ -89,20 +94,26 @@ function startMockMlService() {
 }
 
 let app;
+let db;
+let token; // v2: POST /api/predict requires a Bearer token (docs/ASSUMPTIONS.md B1)
 
 before(async () => {
   await startMockMlService();
   process.env.ML_SERVICE_URL = `http://localhost:${mockMlPort}`;
   const { createApp } = await import("../src/app.js");
-  app = createApp();
+  db = await makeDb();
+  app = createApp({ db });
+  await makeUser(db, { email: "legacy@example.com" });
+  ({ token } = await login(app, "legacy@example.com"));
 });
 
 beforeEach(() => {
   mockMlBehavior = "healthy";
 });
 
-after(() => {
+after(async () => {
   mockMlServer.close();
+  await db.destroy();
 });
 
 test("GET /api/health proxies the ML service health check", async () => {
@@ -130,6 +141,7 @@ test("POST /api/predict with a valid JPEG succeeds and returns the ML service's 
   const fakeJpeg = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0]);
   const res = await request(app)
     .post("/api/predict")
+    .set("Authorization", `Bearer ${token}`)
     .attach("file", fakeJpeg, { filename: "leaf.jpg", contentType: "image/jpeg" });
 
   assert.equal(res.status, 200);
@@ -140,6 +152,7 @@ test("POST /api/predict with a valid JPEG succeeds and returns the ML service's 
 test("POST /api/predict rejects unsupported file types before reaching the ML service", async () => {
   const res = await request(app)
     .post("/api/predict")
+    .set("Authorization", `Bearer ${token}`)
     .attach("file", Buffer.from("just text"), { filename: "notes.txt", contentType: "text/plain" });
 
   assert.equal(res.status, 422);
@@ -147,7 +160,7 @@ test("POST /api/predict rejects unsupported file types before reaching the ML se
 });
 
 test("POST /api/predict with no file returns 400", async () => {
-  const res = await request(app).post("/api/predict");
+  const res = await request(app).post("/api/predict").set("Authorization", `Bearer ${token}`);
   assert.equal(res.status, 400);
   assert.equal(res.body.error, "no_file");
 });
@@ -157,6 +170,7 @@ test("POST /api/predict surfaces the ML service's low-confidence response unchan
   const fakeJpeg = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0]);
   const res = await request(app)
     .post("/api/predict")
+    .set("Authorization", `Bearer ${token}`)
     .attach("file", fakeJpeg, { filename: "leaf.jpg", contentType: "image/jpeg" });
 
   assert.equal(res.status, 200);
@@ -169,6 +183,7 @@ test("POST /api/predict propagates ML service 422 (invalid/blurry image) as-is",
   const fakeJpeg = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0]);
   const res = await request(app)
     .post("/api/predict")
+    .set("Authorization", `Bearer ${token}`)
     .attach("file", fakeJpeg, { filename: "leaf.jpg", contentType: "image/jpeg" });
 
   assert.equal(res.status, 422);

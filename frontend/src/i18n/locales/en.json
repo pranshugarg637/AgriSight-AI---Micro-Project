@@ -1,0 +1,56 @@
+{
+  "_meta": { "nativeName": "English", "dir": "ltr", "speechLang": "en-IN" },
+  "app": {
+    "name": "AgriSight AI",
+    "disclaimer": "Trained mainly on lab photos (PlantVillage). Real-field results may differ. Always confirm with your local agriculture office before acting."
+  },
+  "language": { "choose": "Choose language" },
+  "common": {
+    "loading": "Loading…",
+    "pleaseWait": "Please wait…",
+    "home": "Home",
+    "back": "Back",
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "notSure": "Not sure"
+  },
+  "landing": {
+    "tagline": "Check a sick leaf with your phone camera. No login needed.",
+    "farmer": "I'm a farmer",
+    "farmerSub": "Camera + voice, no login",
+    "signIn": "Sign in / Register",
+    "openAccount": "Open my account",
+    "accountSub": "History, plots, follow-ups and alerts"
+  },
+  "auth": {
+    "signInTitle": "Sign in",
+    "registerTitle": "Create an account",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "register": "Register",
+    "logout": "Sign out",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already registered?",
+    "invalidCredentials": "Invalid email or password.",
+    "rateLimited": "Too many attempts. Please wait a few minutes and try again.",
+    "registerFailed": "Registration could not be completed. Please check the details and try again.",
+    "registered": "Done. You can now sign in.",
+    "passwordHint": "At least {{min}} characters.",
+    "passwordTooShort": "Password must be at least {{min}} characters.",
+    "forbidden": "You do not have permission to view this page."
+  },
+  "nav": {
+    "account": "Account navigation",
+    "diagnose": "Diagnose",
+    "plots": "My plots",
+    "expert": "Expert review",
+    "admin": "Monitoring",
+    "settings": "Settings"
+  }
+}

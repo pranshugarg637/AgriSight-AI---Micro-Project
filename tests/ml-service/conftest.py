@@ -1,8 +1,30 @@
 """Shared pytest fixtures for ml-service tests."""
 from __future__ import annotations
 
+import os
 import shutil
+import sys
+import tempfile
 from pathlib import Path
+
+# --- Hermetic test environment (v2) ---------------------------------------
+# Must run before `app.config` is imported anywhere. Points every artifact
+# path at a throwaway directory so tests behave the same whether or not the
+# developer has trained a model / ingested documents locally, and never
+# write into the real data/ folder.
+_TEST_TMP = Path(tempfile.mkdtemp(prefix="agrisight-ml-tests-"))
+os.environ["ENV"] = "test"
+os.environ["ML_INTERNAL_TOKEN"] = "test-internal-token"
+os.environ["MODEL_PATH"] = str(_TEST_TMP / "models" / "plant_disease_model.pt")
+os.environ["MODEL_CONFIG_PATH"] = str(_TEST_TMP / "models" / "model_config.json")
+os.environ["CLASS_NAMES_PATH"] = str(_TEST_TMP / "models" / "class_names.json")
+os.environ["VECTOR_DB_PATH"] = str(_TEST_TMP / "vector_db")
+os.environ["PREDICTIONS_LOG_PATH"] = str(_TEST_TMP / "predictions_log.jsonl")
+os.environ["TRANSLATION_BACKEND"] = "none"
+os.environ["FAITHFULNESS_BACKEND"] = "none"
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "ml-service"))
+
+INTERNAL_HEADERS = {"X-Internal-Token": "test-internal-token"}
 
 import numpy as np
 import pytest

@@ -9,10 +9,10 @@ from __future__ import annotations
 import logging
 
 from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api import predict, status, metrics
+from app.security import InternalTokenMiddleware, assert_secure_configuration
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -26,14 +26,10 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS: allow the Node backend (and, in dev, the React dev server) to call this service.
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5000", "http://localhost:5173"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# v2: internal-only service. No CORS (browsers never call it directly) and
+# every /api/* request must carry X-Internal-Token (see app/security.py).
+assert_secure_configuration()
+app.add_middleware(InternalTokenMiddleware)
 
 app.include_router(predict.router, prefix="/api", tags=["prediction"])
 app.include_router(status.router, prefix="/api", tags=["status"])
@@ -53,3 +49,9 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 @app.get("/")
 async def root():
     return {"service": "plant-disease-ml-service", "status": "running"}
+
+
+@app.get("/healthz")
+async def healthz():
+    """Unauthenticated liveness probe for container orchestration (no data)."""
+    return {"status": "alive"}

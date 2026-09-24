@@ -1,34 +1,48 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import helmet from "helmet";
 import morgan from "morgan";
-import rateLimit from "express-rate-limit";
 
 import { config } from "./config/index.js";
+import { getDb } from "./db/knex.js";
 import predictRoutes from "./routes/predict.js";
 import statusRoutes from "./routes/status.js";
+import authRoutes from "./routes/auth.js";
+import farmerRoutes from "./routes/farmer.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 
-export function createApp() {
+/**
+ * @param {object} [options]
+ * @param {import("knex").Knex} [options.db]  database (defaults to the configured one)
+ */
+export function createApp(options = {}) {
+  const db = options.db || getDb();
   const app = express();
 
-  app.use(morgan("combined", { skip: () => process.env.NODE_ENV === "test" }));
+  app.set("trust proxy", config.trustProxy);
+  app.disable("x-powered-by");
+  app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" } }));
+  // Never log query strings (they can carry coordinates in Farmer Mode).
+  morgan.token("path-only", (req) => req.originalUrl.split("?")[0]);
+  app.use(
+    morgan(':remote-addr - :method :path-only :status :res[content-length] - :response-time ms', {
+      skip: () => process.env.NODE_ENV === "test",
+    })
+  );
   app.use(
     cors({
       origin: config.corsOrigins,
-      methods: ["GET", "POST"],
+      methods: ["GET", "POST", "PATCH", "DELETE"],
+      credentials: true,
     })
   );
+  app.use(express.json({ limit: "100kb" }));
+  app.use(cookieParser());
 
-  const predictLimiter = rateLimit({
-    windowMs: 60 * 1000,
-    max: 20,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: { error: "rate_limited", detail: "Too many prediction requests. Please wait a moment and try again." },
-  });
-
-  app.use("/api/predict", predictLimiter);
-  app.use("/api", predictRoutes);
+  app.use("/api/auth", authRoutes(db));
+  app.use("/api/farmer", farmerRoutes(db, options.farmer));
+  app.use("/api", predictRoutes(db));
   app.use("/api", statusRoutes);
 
   app.get("/", (req, res) => {

@@ -19,7 +19,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "ml-service"))
 from app.main import app
 from app.inference.service import InferenceService, reset_inference_service_for_tests
 
-client = TestClient(app)
+# v2: the ML service is internal-only; the backend always sends this header.
+client = TestClient(app, headers={"X-Internal-Token": "test-internal-token"})
 
 
 @pytest.fixture(autouse=True)

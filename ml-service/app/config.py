@@ -27,6 +27,10 @@ def _get_int(name: str, default: int) -> int:
 
 
 class Settings:
+    # --- Environment / service boundary ---
+    ENV: str = os.getenv("ENV", "development")
+    ML_INTERNAL_TOKEN: str = os.getenv("ML_INTERNAL_TOKEN", "")
+
     # --- Paths ---
     PROJECT_ROOT: Path = _ROOT
     MODEL_PATH: Path = Path(os.getenv("MODEL_PATH", str(_ROOT / "models" / "plant_disease_model.pt")))
