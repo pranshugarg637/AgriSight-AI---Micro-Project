@@ -59,12 +59,16 @@ Always paired with "confirm at the agriculture office".
 2. **Spurious features.** A Grad-CAM audit found at least one heat map on a
    background artifact (shadow/mesh) rather than leaf tissue. Grad-CAM shows
    correlation, not correctness.
-3. **Overconfidence.** Un-calibrated softmax probabilities of fine-tuned CNNs
+3. **Overconfidence on non-leaves.** During the v2 build a random green-noise
+   image was labelled `Tomato___Tomato_mosaic_virus` with probability 0.861
+   ("high") by the uncalibrated model without OOD thresholds (see
+   `docs/evaluation.md` §4).
+4. **Overconfidence.** Un-calibrated softmax probabilities of fine-tuned CNNs
    are typically overconfident; fit temperature scaling before relying on the
    tiers.
-4. **Similar-looking diseases** (e.g. early vs late blight) — symptom questions
+5. **Similar-looking diseases** (e.g. early vs late blight) — symptom questions
    help only where cited question sets exist.
-5. **Healthy classes** are only "healthy relative to the diseases in the
+6. **Healthy classes** are only "healthy relative to the diseases in the
    dataset", not a general plant-health certificate.
 
 ## Ethical considerations

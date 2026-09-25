@@ -7,7 +7,21 @@ import { createUser } from "../src/repositories/users.js";
 export const TEST_PASSWORD = "correct-horse-battery";
 export const FAKE_JPEG = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0]);
 
+/**
+ * Fresh database per test file: in-memory SQLite by default, or a fresh
+ * Postgres schema when TEST_DATABASE_URL is set (portability check):
+ *   TEST_DATABASE_URL=postgres://agrisight:agrisight@localhost:5432/agrisight npm test
+ */
 export async function makeDb() {
+  if (process.env.TEST_DATABASE_URL) {
+    const schema = `t_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const admin = createDb({ client: "pg", url: process.env.TEST_DATABASE_URL });
+    await admin.raw(`CREATE SCHEMA ${schema}`);
+    await admin.destroy();
+    const db = createDb({ client: "pg", url: process.env.TEST_DATABASE_URL, searchPath: schema });
+    await migrateLatest(db);
+    return db;
+  }
   const db = createDb({ client: "better-sqlite3", filename: ":memory:" });
   await migrateLatest(db);
   return db;

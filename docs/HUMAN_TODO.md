@@ -4,6 +4,17 @@ Everything below has a working *mechanism* in the code; what is missing is
 real-world content, review or credentials. Items are grouped by step. Each
 one says exactly what to do. Nothing here was invented to fill the gap.
 
+## Deployment (verify once)
+
+- [ ] **Docker Compose was not built or run in the build environment** (no
+  Docker daemon, no registry access). `docker compose config` validates.
+  Run `docker compose up --build` once on your machine and fix anything that
+  differs on Windows (e.g. line endings, file sharing for `./models`).
+- [ ] Windows: after pulling v2, run `npm install` in `backend/` and
+  `frontend/` again (new packages incl. the native `better-sqlite3`), and
+  `pip install -r ml-service/requirements.txt` (minimum versions were raised
+  for security fixes).
+
 ## Step 1 — Auth / deployment
 
 - [ ] **Set real secrets** in `.env` for anything beyond local dev:
@@ -65,8 +76,10 @@ one says exactly what to do. Nothing here was invented to fill the gap.
 
 ## Step 5 — Diagnosis quality
 
-- [ ] **Run calibration + OOD fitting on your machine** (the dataset never left
-  it): `cd ml-service && python -m app.calibration.fit`. Then copy the printed
+- [ ] **(Blocking for any pilot) Run calibration + OOD fitting on your machine** — a random
+  green-noise image currently gets a *high-confidence* disease label (evaluation.md §4).
+  The dataset never left your machine, so this could not be done during the build:
+  `cd ml-service && python -m app.calibration.fit`. Then copy the printed
   numbers into `docs/evaluation.md` §4 and commit `docs/figures/reliability_test.png`.
 - [ ] **Collect a real junk set** (≈100–300 photos: hands, soil, walls, sky,
   documents, other crops/weeds, *field* photos of unsupported plants) into

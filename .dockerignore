@@ -1,0 +1,14 @@
+**/node_modules
+**/venv
+**/.venv
+**/__pycache__
+**/.pytest_cache
+frontend/dist
+data/plantvillage
+data/vector_db
+data/predictions_log.jsonl
+backend/data
+.git
+.env
+*.bundle
+_agrisight_transfer

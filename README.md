@@ -1,4 +1,11 @@
-# Evidence-Grounded Plant Disease Decision Support System
+# AgriSight AI — Evidence-Grounded Plant Disease Decision Support System
+
+> **v2** adds a no-login, camera-first, voice-first **Farmer Mode** (Hindi +
+> English, spoken results, nearby help, shopkeeper card, offline quick check)
+> and a JWT **Account Mode** (plots, history, follow-ups, weather risk
+> indicator, expert review, monitoring). Start with
+> [docs/v2-plan.md](docs/v2-plan.md), [docs/ASSUMPTIONS.md](docs/ASSUMPTIONS.md)
+> and — before any real use — [docs/HUMAN_TODO.md](docs/HUMAN_TODO.md).
 
 A confidence-aware plant disease diagnosis system that pairs a specialized
 computer-vision model with Grad-CAM explainability and retrieval-augmented,
@@ -74,6 +81,18 @@ scripts/            Utility scripts
 .env.example        All configuration in one place
 ```
 
+## v2 documentation map
+
+| Doc | What it covers |
+|---|---|
+| `docs/setup.md` | Local setup, Docker Compose, tests |
+| `docs/api.md` | Every endpoint (auth, farmer, account, expert, admin, SSE) |
+| `docs/architecture.md` | Layers, Farmer Mode, help finder, account mode, offline |
+| `docs/evaluation.md` | Metrics — and which ones are not measured yet |
+| `docs/rag.md`, `docs/knowledge-base-guide.md` | Retrieval, safety rule, adding real documents |
+| `docs/privacy.md`, `docs/model-card.md` | Data handling, security, model limits |
+| `docs/HUMAN_TODO.md` | Content, reviews and keys only a person can supply |
+
 ## Quick start
 
 Full walkthrough (including Kaggle dataset download) is in
@@ -97,6 +116,7 @@ uvicorn app.main:app --reload --port 8000
 # 4. Backend (new terminal)
 cd backend
 npm install
+npm run seed        # optional demo accounts (dev only)
 npm run dev
 
 # 5. Frontend (new terminal)

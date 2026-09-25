@@ -20,6 +20,7 @@ export function createDb(overrides = {}) {
     return knexFactory({
       client: "pg",
       connection: dbConfig.url,
+      searchPath: dbConfig.searchPath ? [dbConfig.searchPath] : undefined,
       pool: { min: 0, max: 10 },
     });
   }

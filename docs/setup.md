@@ -235,6 +235,45 @@ npm run dev
 
 Visit the URL Vite prints (typically http://localhost:5173).
 
+- **Farmer Mode** (no login): landing → "I'm a farmer". The camera needs
+  `localhost` or HTTPS (browsers block `getUserMedia` on plain http from other
+  hosts); on a phone in the same Wi-Fi, use the gallery button or serve over HTTPS.
+- **Account Mode**: landing → "Sign in / Register", or use the seeded demo accounts.
+
+### Optional v2 extras (run on the machine that has the dataset and model)
+
+```bash
+cd ml-service
+python -m app.calibration.fit                 # temperature scaling + OOD thresholds (docs/evaluation.md §4)
+python -m app.evaluation.robustness           # robustness table (§7)
+python -m app.rag.coverage                    # which classes have evidence
+pip install onnx onnxruntime
+python -m app.export.onnx_export              # browser model for offline Farmer Mode (§8)
+cd .. && python scripts/generate_audio.py --only-changed   # re-make audio after editing scripts
+```
+
+## 5b. Docker Compose (alternative to steps 3–5)
+
+Requires Docker Desktop, a trained model in `./models/`, and Ollama on the
+host. From the repository root:
+
+```bash
+# PowerShell: $env:JWT_SECRET="..."; $env:ML_INTERNAL_TOKEN="..."; $env:POSTGRES_PASSWORD="..."
+export JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))")
+export ML_INTERNAL_TOKEN=$(python -c "import secrets;print(secrets.token_urlsafe(32))")
+export POSTGRES_PASSWORD=choose-a-password
+docker compose up --build
+```
+
+Frontend: http://localhost:8080 · Backend: http://localhost:5000 · the ML
+service and Postgres are not published. Compose defaults to `ENV=production`,
+which **refuses the placeholder knowledge-base content** (safe steps,
+questions, risk rules, placeholder PDFs). For a demo with the placeholder
+content, run `ENV=development docker compose up --build`.
+`docker compose config` was validated during the build, but the images were
+**not built or run there** (no Docker daemon / registry access) — see
+`docs/HUMAN_TODO.md`.
+
 ## 6. Run the tests
 
 ```bash
@@ -243,13 +282,16 @@ cd tests/ml-service
 pip install -r ../../ml-service/requirements.txt
 pytest -v
 
-# Backend tests
+# Backend tests (in-memory SQLite)
 cd backend
 npm test
+# ...the same suite against Postgres (portability check):
+TEST_DATABASE_URL=postgres://user:pass@localhost:5432/agrisight npm test
 
-# Frontend tests
+# Frontend tests + lint
 cd frontend
 npm test
+npm run lint
 ```
 
 ## Troubleshooting

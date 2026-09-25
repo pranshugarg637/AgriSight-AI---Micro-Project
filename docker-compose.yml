@@ -1,0 +1,95 @@
+# AgriSight AI v2 -- frontend, backend, ml-service, Postgres.
+# Ollama runs on the host (see docs/setup.md); the ML service reaches it via
+# host.docker.internal. Secrets come from your shell / .env:
+#   JWT_SECRET, ML_INTERNAL_TOKEN, POSTGRES_PASSWORD (all required).
+#
+#   docker compose up --build
+#   open http://localhost:8080
+#
+# The trained model is NOT baked into the image: ./models is mounted read-only.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: agrisight
+      POSTGRES_USER: agrisight
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agrisight -d agrisight"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [internal]
+
+  ml-service:
+    build: { context: ., dockerfile: ml-service/Dockerfile }
+    environment:
+      ENV: ${ENV:-production}
+      ML_INTERNAL_TOKEN: ${ML_INTERNAL_TOKEN:?set ML_INTERNAL_TOKEN}
+      MODEL_PATH: /app/models/plant_disease_model.pt
+      MODEL_CONFIG_PATH: /app/models/model_config.json
+      CLASS_NAMES_PATH: /app/models/class_names.json
+      VECTOR_DB_PATH: /app/data/vector_db
+      KNOWLEDGE_BASE_PATH: /app/knowledge_base/documents
+      PREDICTIONS_LOG_PATH: /app/data/predictions_log.jsonl
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      TRANSLATION_BACKEND: ${TRANSLATION_BACKEND:-none}
+      FAITHFULNESS_BACKEND: ${FAITHFULNESS_BACKEND:-nli}
+    volumes:
+      - ./models:/app/models:ro
+      - mldata:/app/data
+      - hfcache:/home/app/.cache
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # No "ports:" -- internal-only; reachable solely by the backend.
+    networks: [internal]
+
+  backend:
+    build: { context: ., dockerfile: backend/Dockerfile }
+    depends_on:
+      db: { condition: service_healthy }
+      ml-service: { condition: service_started }
+    environment:
+      ENV: ${ENV:-production}
+      BACKEND_PORT: 5000
+      ML_SERVICE_URL: http://ml-service:8000
+      ML_INTERNAL_TOKEN: ${ML_INTERNAL_TOKEN:?set ML_INTERNAL_TOKEN}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
+      DB_CLIENT: pg
+      DATABASE_URL: postgres://agrisight:${POSTGRES_PASSWORD}@db:5432/agrisight
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+      TRUST_PROXY: ${TRUST_PROXY:-loopback}
+      IMAGE_STORE_DIR: /app/backend/data/images
+    volumes:
+      - images:/app/backend/data/images
+    ports:
+      - "5000:5000"
+    networks: [internal, public]
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:5000}
+    depends_on: [backend]
+    ports:
+      - "8080:80"
+    networks: [public]
+
+networks:
+  # Not marked `internal: true` because the ML service must reach Ollama on the
+  # host and download models on first start. It is still unreachable from
+  # outside: no published port, and every /api call needs ML_INTERNAL_TOKEN.
+  internal: {}
+  public: {}
+
+volumes:
+  pgdata: {}
+  mldata: {}
+  hfcache: {}
+  images: {}

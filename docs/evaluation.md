@@ -176,6 +176,21 @@ Known limits, to state in any report:
 | False-accept rate, synthetic junk | – | _not run_ | 〃 |
 | False-accept rate, real junk | – | _not collected_ | needs `--junk-dir` |
 
+### Observed during the v2 build (why §4 matters)
+
+With the real trained checkpoint and **no calibration/OOD thresholds fitted
+yet**, two synthetic non-leaf images were classified as follows (single runs):
+
+| Input | Top class | Top-1 probability | Tier |
+|---|---|---|---|
+| Random green noise, 256×256 | Tomato___Tomato_mosaic_virus | 0.861 | **high** |
+| Grey noise, 256×256 | Tomato___Tomato_mosaic_virus | 0.694 | low |
+
+A random texture received a *high-confidence* disease label. This is the
+failure mode the calibration + OOD gate are meant to reduce; it is also why
+Farmer Mode must not be piloted until `python -m app.calibration.fit` has
+been run and its false-accept rate on real junk photos checked.
+
 ## 5. Citation faithfulness (v2, Step 5)
 
 Each sentence in the evidence sections of the LLM explanation is checked
