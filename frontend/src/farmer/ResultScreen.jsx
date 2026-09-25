@@ -26,6 +26,7 @@ export default function ResultScreen({ result, gating, bundle, photoUrl, onHelp,
         </p>
       )}
       {!name && <p className="fres__name">{t("farmer.cannotTell")}</p>}
+      {result.refined && <p className="fhelp__note">{t("farmer.questions.refined")}</p>}
 
       <div className="fres__photo">
         {photoUrl && !showHeat && <img src={photoUrl} alt={t("farmer.yourPhoto")} />}

@@ -1,7 +1,8 @@
 import express from "express";
 import { uploadFarmerImage, requireImageMagicBytes } from "../middleware/upload.js";
 import { farmerPredictLimiter, farmerGeneralLimiter } from "../middleware/rateLimits.js";
-import { mlPostImage } from "../services/mlClient.js";
+import { mlPostImage, mlJson } from "../services/mlClient.js";
+import { z } from "zod";
 import { recordScan } from "../repositories/scans.js";
 import { pickLanguage } from "./predict.js";
 import { loadScriptBundle, resolveClip } from "../services/audioScripts.js";
@@ -78,6 +79,35 @@ export default function farmerRoutes(db, deps = {}) {
     const key = String(req.body?.key || "").slice(0, 140);
     if (/^[a-z0-9_.]+$/.test(key)) console.warn(`[audio] web-speech fallback used for ${key}`);
     return res.status(204).end();
+  });
+
+  // --- Symptom questions (Step 5) -------------------------------------
+  const classKey = z.string().min(3).max(160).regex(/^[A-Za-z0-9_(),. -]+$/);
+  router.get("/questions", async (req, res, next) => {
+    try {
+      const parsed = z.object({ a: classKey, b: classKey }).safeParse(req.query);
+      if (!parsed.success) return res.status(400).json({ error: "validation_error", detail: "a and b class keys required." });
+      const qs = new URLSearchParams({ class_a: parsed.data.a, class_b: parsed.data.b, language: pickLanguage(req.query.lang) });
+      const { status, data } = await mlJson(`/api/questions?${qs}`);
+      return res.status(status).json(data);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  const refineSchema = z.object({
+    candidates: z.array(z.object({ class_key: classKey, probability: z.number().min(0).max(1) })).min(2).max(10),
+    answers: z.record(z.string().max(20), z.enum(["yes", "no", "unsure"])),
+  });
+  router.post("/refine", async (req, res, next) => {
+    try {
+      const parsed = refineSchema.safeParse(req.body || {});
+      if (!parsed.success) return res.status(400).json({ error: "validation_error", detail: "Invalid refine request." });
+      const { status, data } = await mlJson("/api/refine", { method: "POST", body: parsed.data });
+      return res.status(status).json(data);
+    } catch (err) {
+      next(err);
+    }
   });
 
   // --- Nearby help (Step 4) -------------------------------------------

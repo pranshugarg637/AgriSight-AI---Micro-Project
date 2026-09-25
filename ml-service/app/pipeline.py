@@ -26,6 +26,8 @@ from app.services.llm_service import generate_grounded_explanation, LLMServiceEr
 from app.services.prediction_log import log_prediction
 from app.schemas.prediction import PredictionResponse, AlternativeDiagnosis, SourceCitation, CandidateProbability
 from app.translation import get_translation_service
+from app.faithfulness import check_explanation
+from app.symptoms.questions import find_question_set, should_ask
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +106,15 @@ def run_prediction(file_bytes: bytes, content_type: str | None, language: str | 
         top_candidates.append(CandidateProbability(class_key=cp.class_name, crop=c_crop, disease=c_disease,
                                                    probability=cp.probability))
 
+    # Symptom questions are offered when the top-2 are close AND a cited set exists.
+    question_pair = None
+    cand_dicts = [{"class_key": c.class_key, "probability": c.probability} for c in top_candidates]
+    if diagnosis.confidence_level != "unreliable" and should_ask(cand_dicts):
+        qset = find_question_set(cand_dicts[0]["class_key"], cand_dicts[1]["class_key"])
+        question_pair = qset.pair if qset else None
+
     common = dict(
+        question_pair=question_pair,
         diagnosis=disease,
         crop=crop,
         class_key=diagnosis.top_class,
@@ -166,15 +176,9 @@ def run_prediction(file_bytes: bytes, content_type: str | None, language: str | 
 
     # 5. verify (citation faithfulness -- Step 5)
     emit("verify", "start", None)
-    faithfulness = None
-    try:
-        from app.faithfulness import check_explanation
-
-        faithfulness = check_explanation(explanation, evidence_chunks, retrieval_status)
-        if faithfulness is not None and faithfulness.filtered_explanation is not None:
-            explanation = faithfulness.filtered_explanation
-    except ImportError:
-        pass
+    faithfulness = check_explanation(explanation, evidence_chunks, retrieval_status)
+    if faithfulness is not None and faithfulness.filtered_explanation is not None:
+        explanation = faithfulness.filtered_explanation
     emit("verify", "done", None)
 
     # 6. translate (English stays the source of truth)

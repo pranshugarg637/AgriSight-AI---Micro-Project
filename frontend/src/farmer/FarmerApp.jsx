@@ -7,6 +7,7 @@ import CameraCapture from "./CameraCapture";
 import ResultScreen from "./ResultScreen";
 import ShopkeeperCard from "./ShopkeeperCard";
 import HelpFinder from "./HelpFinder";
+import SymptomQuestions from "./SymptomQuestions";
 import { ClipPlayer } from "./audioPlayer";
 import { buildSpokenResult } from "./safetyGating";
 import { farmerPredict, getScriptBundle } from "./api";
@@ -52,7 +53,10 @@ export default function FarmerApp({ player: injectedPlayer } = {}) {
 
   const say = useCallback((field) => player.play([`${lang}.prompt.${field}`]), [player, lang]);
 
-  const gating = useMemo(() => (result ? buildSpokenResult(result, bundle, { lang }) : null), [result, bundle, lang]);
+  const gating = useMemo(
+    () => (result ? buildSpokenResult(result, bundle, { lang, questionsAvailable: Boolean(result.question_pair) }) : null),
+    [result, bundle, lang]
+  );
 
   useEffect(() => {
     if (screen === "result" && gating) player.play(gating.playlist);
@@ -162,8 +166,21 @@ export default function FarmerApp({ player: injectedPlayer } = {}) {
           bundle={bundle}
           photoUrl={photoUrl}
           onHelp={() => setScreen("help")}
+          onQuestions={() => setScreen("questions")}
           onShopkeeper={() => setShowCard(true)}
           onRestart={restart}
+        />
+      )}
+
+      {screen === "questions" && result && (
+        <SymptomQuestions
+          result={result}
+          player={player}
+          onCancel={() => setScreen("result")}
+          onDone={(refined) => {
+            setResult(refined);
+            setScreen("result");
+          }}
         />
       )}
 

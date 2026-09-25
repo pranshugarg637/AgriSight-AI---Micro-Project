@@ -42,3 +42,39 @@ export function getPositionOnce({ timeout = 15000 } = {}) {
     );
   });
 }
+
+export async function getQuestions(a, b, lang) {
+  return getJson(`/api/farmer/questions?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}&lang=${lang}`);
+}
+
+export async function refineDiagnosis(candidates, answers) {
+  const res = await fetch(`${BACKEND_URL}/api/farmer/refine`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ candidates, answers }),
+  });
+  return parseResponse(res);
+}
+
+/** Merge a /refine answer into the original prediction (same shape for gating). */
+export function applyRefinement(result, refined) {
+  const alts = refined.candidates
+    .filter((c) => c.class_key !== refined.class_key)
+    .slice(0, 2)
+    .map((c) => {
+      const [crop, disease] = c.class_key.split("___");
+      return { class_key: c.class_key, crop: crop.replace(/_/g, " "), disease: (disease || "").replace(/_/g, " "), confidence: c.probability };
+    });
+  return {
+    ...result,
+    class_key: refined.class_key,
+    crop: refined.crop,
+    diagnosis: refined.diagnosis,
+    confidence: refined.confidence,
+    confidence_level: refined.confidence_level,
+    alternatives: alts,
+    top_candidates: refined.candidates,
+    question_pair: null,
+    refined: true,
+  };
+}

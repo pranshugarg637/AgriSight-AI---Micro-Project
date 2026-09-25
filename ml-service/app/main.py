@@ -11,7 +11,7 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from app.api import predict, status, metrics
+from app.api import predict, status, metrics, refine
 from app.security import InternalTokenMiddleware, assert_secure_configuration
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
@@ -34,6 +34,7 @@ app.add_middleware(InternalTokenMiddleware)
 app.include_router(predict.router, prefix="/api", tags=["prediction"])
 app.include_router(status.router, prefix="/api", tags=["status"])
 app.include_router(metrics.router, prefix="/api", tags=["metrics"])
+app.include_router(refine.router, prefix="/api", tags=["symptom-questions"])
 
 
 @app.exception_handler(Exception)

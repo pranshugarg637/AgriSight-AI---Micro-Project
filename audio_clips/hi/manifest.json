@@ -305,6 +305,24 @@
     "script_reviewed_by_native_speaker": false,
     "text_sha": "3babf49265740494"
   },
+  "hi.q_tomato_early_blight_vs_tomato_late_blight.q1": {
+    "backend": "espeak-ng",
+    "file": "q_tomato_early_blight_vs_tomato_late_blight/q1.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "f860214acf48298f"
+  },
+  "hi.q_tomato_early_blight_vs_tomato_late_blight.q2": {
+    "backend": "espeak-ng",
+    "file": "q_tomato_early_blight_vs_tomato_late_blight/q2.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "f407f674a97698a9"
+  },
+  "hi.q_tomato_early_blight_vs_tomato_late_blight.q3": {
+    "backend": "espeak-ng",
+    "file": "q_tomato_early_blight_vs_tomato_late_blight/q3.mp3",
+    "script_reviewed_by_native_speaker": false,
+    "text_sha": "da14df39a7ea6739"
+  },
   "hi.raspberry_healthy.name": {
     "backend": "espeak-ng",
     "file": "raspberry_healthy/name.mp3",

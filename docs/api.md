@@ -62,6 +62,16 @@ monitoring only. The file's magic bytes must match its declared type.
 | `GET /api/farmer/audio-scripts/:lang` | Script text for the language: `{prompts, classes:{slug:{class_key, clips:{name, what_it_is, safe_steps}, sources, source_is_placeholder, placeholder_suppressed, reviewed_by_native_speaker}}, unreviewed:[files], available_clips:[keys]}`. When `ENV=production`, text derived only from placeholder documents is removed. |
 | `POST /api/farmer/audio-fallback` | `{key}` -- the client reports that it had to use speech synthesis (logged, nothing stored). |
 
+## Symptom questions (Step 5)
+
+Offered when the prediction's `question_pair` is not null (top-2 calibrated
+probabilities closer than `REFINE_MARGIN` and a *cited* question set exists).
+
+| Route | Body / params | Response |
+|---|---|---|
+| `GET /api/farmer/questions?a=<class_key>&b=<class_key>&lang=hi` | – | `{pair, classes, audio_slug, questions:[{id, text, text_en, citations}], source_is_placeholder, likelihood_basis}` or `404` |
+| `POST /api/farmer/refine` | `{candidates:[{class_key, probability}] (from top_candidates), answers:{q1:"yes"\|"no"\|"unsure"}}` | `{class_key, crop, diagnosis, confidence, confidence_level, candidates, still_close, note}` — same confidence tiers as the CNN |
+
 ## Nearby help (guest, Step 4)
 
 Coordinates are used for the single request: never stored, never written to
@@ -138,7 +148,8 @@ optional `plot_id`.
 | `explanation_translated` | Machine translation of `explanation` into `language`, or `null` |
 | `translation_backend` | `indictrans2` / `bhashini` / `none` |
 | `translation_status` | `not_requested`, `translated`, `unavailable` (backend not installed / no keys), `failed` |
-| `faithfulness` | Citation-faithfulness report (Step 5) |
+| `faithfulness` | `{checked, backend, total_sentences, unsupported_sentences, unsupported_rate, action}` (Step 5) |
+| `question_pair` | Id of a cited symptom-question set when the top two are close, else `null` |
 | `scan_id`, `plot_id` | Added by the backend for Account Mode |
 
 `sources` are the same citations for both the English and the translated

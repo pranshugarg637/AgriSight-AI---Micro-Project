@@ -148,3 +148,22 @@ grounding errors.
 drift script (`python -m app.translation.drift_check`) only flags sentences
 whose round trip drifts; it does not prove a translation is correct.
 Native-speaker review is listed in `docs/HUMAN_TODO.md`.
+
+## v2: hybrid retrieval, stricter ingestion, faithfulness (Step 5)
+
+- **Hybrid retrieval** (`app/rag/hybrid.py`): candidates are ranked by
+  `alpha·embedding + (1-alpha)·BM25` (min-max normalised). The v1 safety
+  rule is untouched: a chunk is used only if its *embedding* relevance
+  `1/(1+squared L2)` ≥ `RAG_MIN_RELEVANCE_SCORE`; statuses remain
+  `success` / `insufficient_evidence` / `knowledge_base_empty`.
+- **Optional re-ranker** (`RAG_RERANKER=cross-encoder`) only re-orders chunks
+  that passed the gate; if the model cannot load, the hybrid order is kept.
+- **Ingestion validation** (`app/rag/metadata.py`): missing sidecar,
+  organization or source URL → warning in dev, refusal in production /
+  `--strict`; placeholder documents are refused in production.
+- **Coverage report**: `python -m app.rag.coverage`.
+- **Citation faithfulness** (`app/faithfulness/`): NLI check per sentence;
+  unsupported sentences removed (default) with a visible note; response field
+  `faithfulness`. See `docs/evaluation.md` §5.
+
+See `docs/knowledge-base-guide.md` for adding real documents.

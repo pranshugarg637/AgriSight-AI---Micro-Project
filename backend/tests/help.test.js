@@ -191,3 +191,26 @@ test("geocode endpoint validates input", async () => {
   const ok = await request(app).get("/api/farmer/geocode?q=Barabanki");
   assert.equal(ok.body.places[0].name, "Barabanki");
 });
+
+test("symptom question proxies validate input and forward to the ML service with the internal token", async () => {
+  const { startMockMl } = await import("./helpers.js");
+  const ml = await startMockMl({
+    "GET /api/questions": () => [200, { pair: "p", questions: [] }],
+    "POST /api/refine": (req, body) => [200, { echoed: JSON.parse(body.toString()) }],
+  });
+  process.env.ML_SERVICE_URL = `http://localhost:${ml.port}`;
+  try {
+    const app = appWith();
+    const q = await request(app).get("/api/farmer/questions?a=Tomato___Late_blight&b=Tomato___Early_blight&lang=hi");
+    assert.equal(q.status, 200);
+    assert.match(ml.calls[0].url, /language=hi/);
+    assert.equal((await request(app).get("/api/farmer/questions?a=%3Cscript%3E&b=x")).status, 400);
+    const body = { candidates: [{ class_key: "Tomato___Late_blight", probability: 0.5 }, { class_key: "Tomato___Early_blight", probability: 0.4 }], answers: { q1: "yes" } };
+    const r = await request(app).post("/api/farmer/refine").send(body);
+    assert.equal(r.status, 200);
+    assert.deepEqual(r.body.echoed, body);
+    assert.equal((await request(app).post("/api/farmer/refine").send({ ...body, answers: { q1: "maybe" } })).status, 400);
+  } finally {
+    ml.server.close();
+  }
+});

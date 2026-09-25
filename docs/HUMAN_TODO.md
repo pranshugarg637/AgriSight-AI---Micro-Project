@@ -62,3 +62,24 @@ one says exactly what to do. Nothing here was invented to fill the gap.
 - [ ] Live Overpass/Nominatim calls were **not** verified from the build
   environment (no network); test once on a connected machine:
   `curl "http://localhost:5000/api/farmer/shops?lat=26.85&lng=80.95"`.
+
+## Step 5 — Diagnosis quality
+
+- [ ] **Run calibration + OOD fitting on your machine** (the dataset never left
+  it): `cd ml-service && python -m app.calibration.fit`. Then copy the printed
+  numbers into `docs/evaluation.md` §4 and commit `docs/figures/reliability_test.png`.
+- [ ] **Collect a real junk set** (≈100–300 photos: hands, soil, walls, sky,
+  documents, other crops/weeds, *field* photos of unsupported plants) into
+  `data/ood_junk/` and re-run with `--junk-dir ../data/ood_junk`.
+- [ ] **Add real knowledge-base documents** (see `docs/knowledge-base-guide.md`),
+  delete the two placeholder PDFs, re-ingest, and run `python -m app.rag.coverage`.
+- [ ] **Symptom questions**: the only set
+  (`knowledge_base/questions/tomato_early_blight__vs__tomato_late_blight.json`)
+  is derived from the placeholder PDFs and refused in production. Re-write it
+  from real documents and add sets for other confusable pairs (look at the
+  confusion matrix in `models/evaluation_report.json` for the most-confused
+  pairs), each question citing a document quote. Have an agronomist check the
+  `p_yes` constants.
+- [ ] **Faithfulness**: with Ollama and the NLI model available, collect ~50
+  real responses (`FAITHFULNESS_ACTION=flag`) and run
+  `python -m app.faithfulness.evaluate`; report the unsupported-claim rate.

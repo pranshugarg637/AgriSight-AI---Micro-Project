@@ -198,6 +198,10 @@
       "call": "Call",
       "map": "Map",
       "unnamedShop": "Shop (name not listed)"
+    },
+    "questions": {
+      "unavailable": "Questions are not available right now.",
+      "refined": "Updated from your answers (indicative, not a laboratory test)."
     }
   }
 }

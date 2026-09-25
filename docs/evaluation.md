@@ -117,3 +117,86 @@ small real-world field test set, re-run
 `python -m app.training.run_evaluation --dataset-path <field_test_set_path>`
 and report both numbers side by side rather than only the PlantVillage
 figure.
+
+## 4. Calibration and "I don't know" (v2, Step 5)
+
+### Status: mechanism built and unit-tested — **no real numbers yet**
+
+The fitting script needs the trained model *and* the PlantVillage
+validation/test images, which live only on the developer's machine. It was
+**not run during the v2 build**, so this section deliberately contains no
+ECE, no reliability diagram and no OOD rates. Run it and paste the printed
+results here:
+
+```bash
+cd ml-service
+python -m app.calibration.fit                       # full val (8,145) + test (8,145) splits
+python -m app.calibration.fit --max-samples 3000    # quicker; the report states n
+python -m app.calibration.fit --junk-dir ../data/ood_junk   # add real junk photos (recommended)
+```
+
+What it does (all from real runs, nothing estimated):
+
+1. Re-creates the exact train/val/test split used by training
+   (`VAL_SPLIT`, `TEST_SPLIT`, seed 42). The build verified that this
+   reconstruction reproduces the per-class test supports recorded in
+   `models/evaluation_report.json` exactly (38/38 classes match, 8,145 test
+   images) — only the file list was used for that check, no images.
+2. **Temperature scaling**: fits one scalar `T` on the validation logits by
+   minimising NLL (grid + golden-section search), then reports NLL and
+   **Expected Calibration Error (15 bins)** on the *test* split before and
+   after, the share and accuracy of each confidence tier (`high/low/unreliable`
+   with the configured thresholds, on calibrated probabilities), and draws
+   `docs/figures/reliability_test.png`.
+3. **OOD thresholds** (fitted on validation, in-distribution only):
+   - leaf-colour ratio threshold accepting 99% of validation leaves → `not_a_leaf`;
+   - energy-score threshold accepting 95% of validation leaves → `unsupported_crop`.
+   Reports the test **false-reject rate** (real leaves wrongly rejected, by
+   reason) and the **false-accept rate** on each junk set.
+4. Writes `temperature`, `ood` and `calibration` into `models/model_config.json`
+   (original kept as `model_config.pre_calibration.json`) and the full report to
+   `models/calibration_report.json`. The ML service applies them on the next start.
+
+Known limits, to state in any report:
+
+- The junk set shipped with the script is **synthetic** (noise, flat colours,
+  gradients, shapes, skin-like and soil-like textures) and is labelled
+  "weak proxy" in the output. Real false-accept rates need real photos of hands,
+  soil, walls, other crops and other plants (`HUMAN_TODO.md`).
+- `unsupported_crop` means "outside the fitted in-distribution range" — it can
+  also fire for a supported crop photographed very differently from PlantVillage.
+- Because PlantVillage validation/test images are lab-style, thresholds fitted on
+  them may reject many real field photos. Measure on field photos before relying on it.
+
+| Metric (test split) | Before | After | Source |
+|---|---|---|---|
+| NLL | _not run_ | _not run_ | `models/calibration_report.json` |
+| ECE (15 bins) | _not run_ | _not run_ | 〃 |
+| False-reject rate (OOD gates, real leaves) | – | _not run_ | 〃 |
+| False-accept rate, synthetic junk | – | _not run_ | 〃 |
+| False-accept rate, real junk | – | _not collected_ | needs `--junk-dir` |
+
+## 5. Citation faithfulness (v2, Step 5)
+
+Each sentence in the evidence sections of the LLM explanation is checked
+against the retrieved chunks with an NLI cross-encoder
+(`FAITHFULNESS_MODEL`, default `cross-encoder/nli-deberta-v3-small`).
+Unsupported sentences are removed (default) or flagged, and each response
+reports `faithfulness.unsupported_rate`. Aggregate over a set of real
+responses with:
+
+```bash
+python -m app.faithfulness.evaluate --input ../data/faithfulness_samples.jsonl
+```
+
+**Unsupported-claim rate: not measured yet** (needs Ollama + the NLI model +
+real knowledge-base documents; none were available in the build environment).
+NLI models make mistakes too — treat the rate as an indicator, and keep the
+manual RAG evaluation in section 2.
+
+## 6. Symptom questions
+
+The Bayesian update is unit-tested for correctness of the arithmetic only.
+Whether the questions actually improve accuracy is **not measured**: that
+needs expert-labelled field cases where farmers answered the questions
+(see `reviewed_labels`, Step 6).

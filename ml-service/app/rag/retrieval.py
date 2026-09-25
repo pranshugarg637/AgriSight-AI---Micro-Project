@@ -28,6 +28,8 @@ class RetrievedChunk:
     page_number: int | None
     source_url: str
     document_type: str
+    bm25_score: float | None = None
+    hybrid_score: float | None = None
 
 
 @dataclass
@@ -57,31 +59,21 @@ def retrieve_evidence(crop: str, disease: str, confidence: float, alternatives: 
         return RetrievalResult(status="knowledge_base_empty", chunks=[], query_used="")
 
     query = build_structured_query(crop, disease, confidence, alternatives or [])
-    raw = store.query(query, top_k=settings.RAG_TOP_K)
-
-    documents = raw.get("documents", [[]])[0]
-    metadatas = raw.get("metadatas", [[]])[0]
-    distances = raw.get("distances", [[]])[0]
-
     chunks = []
-    for doc, meta, dist in zip(documents, metadatas, distances):
-        # Chroma returns L2 distance by default; convert to a bounded
-        # relevance score in [0,1] where higher = more relevant.
-        relevance = 1.0 / (1.0 + dist)
-        chunks.append(
-            RetrievedChunk(
-                text=doc,
-                relevance_score=float(relevance),
-                filename=meta.get("filename", ""),
-                title=meta.get("title", ""),
-                organization=meta.get("organization", ""),
-                crop=meta.get("crop", ""),
-                disease=meta.get("disease", ""),
-                page_number=meta.get("page_number") if meta.get("page_number", -1) != -1 else None,
-                source_url=meta.get("source_url", ""),
-                document_type=meta.get("document_type", ""),
-            )
-        )
+    if settings.RAG_RETRIEVAL_MODE == "hybrid":
+        from app.rag.hybrid import hybrid_search
+
+        for hit in hybrid_search(store, query, top_k=settings.RAG_TOP_K, alpha=settings.RAG_HYBRID_ALPHA):
+            chunks.append(_to_chunk(hit["text"], hit["metadata"], hit["relevance"], hit["bm25"], hit["hybrid"]))
+    else:
+        raw = store.query(query, top_k=settings.RAG_TOP_K)
+        documents = raw.get("documents", [[]])[0]
+        metadatas = raw.get("metadatas", [[]])[0]
+        distances = raw.get("distances", [[]])[0]
+        for doc, meta, dist in zip(documents, metadatas, distances):
+            # Chroma returns (squared) L2 distance by default; convert to a bounded
+            # relevance score in [0,1] where higher = more relevant.
+            chunks.append(_to_chunk(doc, meta, 1.0 / (1.0 + dist)))
 
     relevant_chunks = [c for c in chunks if c.relevance_score >= settings.RAG_MIN_RELEVANCE_SCORE]
 
@@ -89,8 +81,45 @@ def retrieve_evidence(crop: str, disease: str, confidence: float, alternatives: 
         logger.info(
             "Retrieval produced no sufficiently relevant chunks for query '%s' "
             "(best score: %.3f, threshold: %.3f).",
-            query, chunks[0].relevance_score if chunks else 0.0, settings.RAG_MIN_RELEVANCE_SCORE,
+            query, max((c.relevance_score for c in chunks), default=0.0), settings.RAG_MIN_RELEVANCE_SCORE,
         )
         return RetrievalResult(status="insufficient_evidence", chunks=[], query_used=query)
 
+    if settings.RAG_RERANKER == "cross-encoder":
+        relevant_chunks = _rerank(query, relevant_chunks, settings.RAG_RERANKER_MODEL)
+
     return RetrievalResult(status="success", chunks=relevant_chunks, query_used=query)
+
+
+_reranker = None
+
+
+def _rerank(query, chunks, model_name):
+    global _reranker
+    try:
+        if _reranker is None:
+            from app.rag.hybrid import CrossEncoderReranker
+
+            _reranker = CrossEncoderReranker(model_name)
+        return _reranker.rerank(query, chunks)
+    except Exception as e:  # model not downloadable -> keep hybrid order
+        logger.warning("Re-ranker unavailable (%s); keeping retrieval order.", e)
+        return chunks
+
+
+def _to_chunk(doc, meta, relevance, bm25=None, hybrid=None) -> RetrievedChunk:
+    meta = meta or {}
+    return RetrievedChunk(
+        text=doc,
+        relevance_score=float(relevance),
+        filename=meta.get("filename", ""),
+        title=meta.get("title", ""),
+        organization=meta.get("organization", ""),
+        crop=meta.get("crop", ""),
+        disease=meta.get("disease", ""),
+        page_number=meta.get("page_number") if meta.get("page_number", -1) != -1 else None,
+        source_url=meta.get("source_url", ""),
+        document_type=meta.get("document_type", ""),
+        bm25_score=bm25,
+        hybrid_score=hybrid,
+    )

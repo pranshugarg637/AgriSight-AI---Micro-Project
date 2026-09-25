@@ -37,7 +37,18 @@ CLIPS = ROOT / "audio_clips"
 ESPEAK_VOICES = {"en": "en-gb", "hi": "hi"}
 
 
+QUESTIONS = ROOT / "knowledge_base" / "questions"
+
+
 def iter_clips(lang: str):
+    # symptom questions (knowledge_base/questions/*.json) -> slug "q_<a>_vs_<b>"
+    for f in sorted(QUESTIONS.glob("*.json")):
+        doc = json.loads(f.read_text(encoding="utf-8"))
+        qslug = "q_" + f.stem.replace("__vs__", "_vs_")
+        for q in doc.get("questions", []):
+            text = (q.get("text") or {}).get(lang)
+            if text:
+                yield qslug, q["id"], text.strip(), bool(doc.get("reviewed_by_native_speaker"))
     for f in sorted((SCRIPTS / lang).glob("*.json")):
         doc = json.loads(f.read_text(encoding="utf-8"))
         slug = "prompt" if doc.get("kind") == "prompts" else doc["slug"]

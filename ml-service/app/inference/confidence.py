@@ -28,6 +28,8 @@ class DiagnosisResult:
     is_reliable: bool
     message: str
     alternatives: list[ClassProbability] = field(default_factory=list)
+    # v2: why the result is unreliable -- "low_confidence" | "not_a_leaf" | "unsupported_crop"
+    unreliable_reason: str | None = None
 
 
 def parse_class_name(raw_class_name: str) -> tuple[str, str]:
@@ -67,6 +69,7 @@ def build_diagnosis(sorted_probs: list[ClassProbability]) -> DiagnosisResult:
                 "Please upload a clearer, well-lit photo of the affected leaf."
             ),
             alternatives=_select_alternatives(sorted_probs),
+            unreliable_reason="low_confidence",
         )
 
     if top.probability < settings.HIGH_CONFIDENCE_THRESHOLD:
@@ -112,3 +115,20 @@ def _select_alternatives(sorted_probs: list[ClassProbability]) -> list[ClassProb
         if len(alternatives) >= settings.MAX_DIFFERENTIAL_ALTERNATIVES:
             break
     return alternatives
+
+
+OOD_MESSAGES = {
+    "not_a_leaf": "This image does not look like a plant leaf, so no diagnosis is given. "
+                  "Please photograph a single affected leaf in good light.",
+    "unsupported_crop": "This leaf looks unlike the crops the model was trained on (or the photo is unusual), "
+                        "so no diagnosis is given. Please consult your local agriculture office.",
+}
+
+
+def mark_out_of_distribution(result: DiagnosisResult, reason: str) -> DiagnosisResult:
+    """Downgrade any result to 'unreliable' with an OOD reason code."""
+    result.confidence_level = "unreliable"
+    result.is_reliable = False
+    result.unreliable_reason = reason
+    result.message = OOD_MESSAGES.get(reason, result.message)
+    return result

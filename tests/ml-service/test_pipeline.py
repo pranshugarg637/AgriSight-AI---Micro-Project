@@ -94,3 +94,24 @@ def test_invalid_image_is_a_422_pipeline_error(monkeypatch):
     with pytest.raises(PipelineError) as e:
         run_prediction(b"not an image", "image/jpeg", "en")
     assert e.value.status_code == 422 and e.value.stage == "validate"
+
+
+def test_close_top_two_with_cited_question_set_offers_questions(monkeypatch):
+    install(monkeypatch, probs={"Tomato___Late_blight": 0.62, "Tomato___Early_blight": 0.35, "Tomato___healthy": 0.03})
+    res = run_prediction(leaf_jpeg_bytes(), "image/jpeg", "en")
+    assert res.confidence_level == "low"
+    assert res.question_pair == "tomato_early_blight__vs__tomato_late_blight"
+
+
+def test_no_questions_when_not_close_or_no_cited_set(monkeypatch):
+    install(monkeypatch, probs=HIGH)
+    assert run_prediction(leaf_jpeg_bytes(), "image/jpeg", "en").question_pair is None
+    install(monkeypatch, probs={"Apple___Black_rot": 0.5, "Apple___Apple_scab": 0.45, "Apple___healthy": 0.05})
+    assert run_prediction(leaf_jpeg_bytes(), "image/jpeg", "en").question_pair is None
+
+
+def test_ood_reason_is_propagated_and_stops_rag(monkeypatch):
+    _, calls = install(monkeypatch, probs=HIGH, unreliable_reason="not_a_leaf")
+    res = run_prediction(leaf_jpeg_bytes(), "image/jpeg", "en")
+    assert res.unreliable_reason == "not_a_leaf" and res.confidence_level == "unreliable"
+    assert calls["retrieve"] == 0

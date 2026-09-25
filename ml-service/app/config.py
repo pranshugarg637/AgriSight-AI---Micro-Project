@@ -69,6 +69,18 @@ class Settings:
     BHASHINI_API_KEY: str = os.getenv("BHASHINI_API_KEY", "")
     BHASHINI_PIPELINE_ID: str = os.getenv("BHASHINI_PIPELINE_ID", "64392f96daac500b55c543cd")
 
+    # --- Diagnosis quality (Step 5) ---
+    QUESTIONS_PATH: Path = Path(os.getenv("QUESTIONS_PATH", str(_ROOT / "knowledge_base" / "questions")))
+    REFINE_MARGIN: float = _get_float("REFINE_MARGIN", 0.30)  # top-2 gap below which questions are offered
+    RAG_RETRIEVAL_MODE: str = os.getenv("RAG_RETRIEVAL_MODE", "hybrid")  # hybrid | embedding
+    RAG_HYBRID_ALPHA: float = _get_float("RAG_HYBRID_ALPHA", 0.6)  # weight of embedding score in ranking
+    RAG_RERANKER: str = os.getenv("RAG_RERANKER", "none")  # none | cross-encoder
+    RAG_RERANKER_MODEL: str = os.getenv("RAG_RERANKER_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
+    FAITHFULNESS_BACKEND: str = os.getenv("FAITHFULNESS_BACKEND", "nli")  # nli | none
+    FAITHFULNESS_MODEL: str = os.getenv("FAITHFULNESS_MODEL", "cross-encoder/nli-deberta-v3-small")
+    FAITHFULNESS_MIN_ENTAILMENT: float = _get_float("FAITHFULNESS_MIN_ENTAILMENT", 0.5)
+    FAITHFULNESS_ACTION: str = os.getenv("FAITHFULNESS_ACTION", "remove")  # remove | flag
+
     # --- LLM (Ollama) ---
     LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "ollama")
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")

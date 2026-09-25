@@ -58,6 +58,7 @@ class PredictionResponse(BaseModel):
     translation_backend: str | None = None
     translation_status: str = "not_requested"
     faithfulness: FaithfulnessReport | None = None
+    question_pair: str | None = Field(default=None, description="Cited symptom-question set id when top-2 are close")
     gradcam_image_base64: str | None = None
     gradcam_note: str = "Highlighted regions indicate areas that influenced the model's prediction."
     explanation: str | None = None

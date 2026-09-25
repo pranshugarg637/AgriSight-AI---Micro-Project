@@ -1,0 +1,41 @@
+{
+  "classes": ["Tomato___Early_blight", "Tomato___Late_blight"],
+  "source_is_placeholder": true,
+  "reviewed_by_native_speaker": false,
+  "likelihood_basis": "Modelling constants, not measured frequencies: p_yes = 0.8 when the cited document describes the sign as characteristic of that disease, 0.3 when the documents do not describe it for that disease. Refused in production because both source PDFs are placeholders (TODO_HUMAN: replace with real extension documents and re-derive).",
+  "questions": [
+    {
+      "id": "q1",
+      "text": {
+        "en": "Do the spots have rings inside them, like a target?",
+        "hi": "क्या धब्बों के अंदर निशाने जैसे गोल छल्ले हैं?"
+      },
+      "p_yes": { "Tomato___Early_blight": 0.8, "Tomato___Late_blight": 0.3 },
+      "citations": [
+        { "file": "tomato_early_blight_guide.pdf", "page": 1, "quote": "small, dark brown to black spots with a characteristic pattern of concentric rings, giving lesions a target-like or bulls-eye appearance" }
+      ]
+    },
+    {
+      "id": "q2",
+      "text": {
+        "en": "In damp weather, is there white fuzzy growth on the underside of the leaf?",
+        "hi": "नम मौसम में, क्या पत्ती के नीचे की तरफ़ सफ़ेद रोएँदार परत दिखती है?"
+      },
+      "p_yes": { "Tomato___Early_blight": 0.3, "Tomato___Late_blight": 0.8 },
+      "citations": [
+        { "file": "tomato_late_blight_guide.pdf", "page": 1, "quote": "Under humid conditions, a white, fuzzy fungal growth may appear on the underside of affected leaves." }
+      ]
+    },
+    {
+      "id": "q3",
+      "text": {
+        "en": "Did the problem start on the older, lower leaves of the plant?",
+        "hi": "क्या समस्या पौधे की पुरानी, नीचे वाली पत्तियों से शुरू हुई?"
+      },
+      "p_yes": { "Tomato___Early_blight": 0.8, "Tomato___Late_blight": 0.3 },
+      "citations": [
+        { "file": "tomato_early_blight_guide.pdf", "page": 1, "quote": "often first observed on older, lower leaves of the plant" }
+      ]
+    }
+  ]
+}

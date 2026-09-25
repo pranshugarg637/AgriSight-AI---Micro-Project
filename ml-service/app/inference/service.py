@@ -20,7 +20,10 @@ from app.config import get_settings
 from app.training.model_factory import build_model, get_target_layer
 from app.training.dataset import IMAGENET_MEAN, IMAGENET_STD
 from app.inference.gradcam import GradCAM, overlay_heatmap_on_image, image_to_bytes
-from app.inference.confidence import ClassProbability, build_diagnosis, parse_class_name, DiagnosisResult
+from app.inference.confidence import (
+    ClassProbability, build_diagnosis, parse_class_name, DiagnosisResult, mark_out_of_distribution,
+)
+from app.inference.ood import OODConfig, ood_reason
 
 logger = logging.getLogger(__name__)
 
@@ -112,7 +115,10 @@ class InferenceService:
 
         with torch.no_grad():
             logits = self.model(input_tensor)
-            probs = torch.softmax(logits, dim=1)[0].cpu().numpy()
+        logits_np = logits.cpu().numpy()
+        # v2: temperature scaling (fitted on the validation split) if configured.
+        temperature = float(self.model_config.get("temperature", 1.0))
+        probs = torch.softmax(logits / temperature, dim=1)[0].cpu().numpy()
 
         class_probs = [
             ClassProbability(class_name=name, probability=float(p))
@@ -121,6 +127,14 @@ class InferenceService:
         class_probs.sort(key=lambda cp: cp.probability, reverse=True)
 
         diagnosis: DiagnosisResult = build_diagnosis(class_probs)
+
+        # v2: out-of-distribution gate (thresholds only if fitted -- see app/calibration/fit.py)
+        ood_cfg = OODConfig.from_model_config(self.model_config)
+        ood_details: dict = {}
+        if ood_cfg.enabled:
+            reason, ood_details = ood_reason(logits_np, image, ood_cfg)
+            if reason:
+                mark_out_of_distribution(diagnosis, reason)
 
         # Grad-CAM for the predicted (top) class
         gradcam = GradCAM(self.model, self.target_layer)
@@ -143,6 +157,8 @@ class InferenceService:
             "class_probabilities": class_probs,
             "gradcam_base64": gradcam_base64,
             "model_version": self.model_config.get("model_version"),
+            "calibrated": "temperature" in self.model_config,
+            "ood": ood_details,
         }
 
 
