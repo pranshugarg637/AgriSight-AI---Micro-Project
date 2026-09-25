@@ -202,7 +202,8 @@
     "questions": {
       "unavailable": "Questions are not available right now.",
       "refined": "Updated from your answers (indicative, not a laboratory test)."
-    }
+    },
+    "photoNotStored": "🔒 Your photo is checked and then discarded. No login, no name, no location is saved."
   },
   "account": {
     "loadFailed": "Could not load. Please try again.",
@@ -285,5 +286,22 @@
   "reminders": {
     "due_one": "{{count}} plot is due for a re-scan:",
     "due_other": "{{count}} plots are due for a re-scan:"
+  },
+  "monitor": {
+    "window": "Time window",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "scans": "Scans",
+    "lowOrUnreliable": "Low or unreliable",
+    "ood": "Out-of-distribution rejections",
+    "expertAccuracy": "Accuracy vs expert labels",
+    "perDay": "Scans per day",
+    "farmer": "Farmer mode",
+    "account": "Account mode",
+    "mix": "Confidence, OOD and retrieval mix",
+    "perClass": "Per-class confidence",
+    "class": "Class",
+    "meanConfidence": "Mean confidence",
+    "weekly": "Weekly mean confidence"
   }
 }

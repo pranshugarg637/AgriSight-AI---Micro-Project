@@ -200,3 +200,16 @@ The Bayesian update is unit-tested for correctness of the arithmetic only.
 Whether the questions actually improve accuracy is **not measured**: that
 needs expert-labelled field cases where farmers answered the questions
 (see `reviewed_labels`, Step 6).
+
+## 7. Robustness suite (v2, Step 7)
+
+```bash
+cd ml-service
+python -m app.evaluation.robustness --max-samples 1000
+```
+
+Reports, for blur (r = 1/2/4), low light (×0.5/×0.3), JPEG (q30/q10),
+rotation (15°/45°/90°), central occlusion (25%/50%) and synthetic junk:
+accuracy, mean top-1 probability, confidence-tier shares and (if fitted) the
+OOD rejection share. **Not run during the build** (needs the local dataset);
+no robustness numbers are claimed.

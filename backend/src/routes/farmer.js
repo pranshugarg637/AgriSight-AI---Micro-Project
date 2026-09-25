@@ -5,6 +5,7 @@ import { mlPostImage, mlJson } from "../services/mlClient.js";
 import { z } from "zod";
 import { recordScan } from "../repositories/scans.js";
 import { pickLanguage } from "./predict.js";
+import { relayPredictionStream } from "../services/sseRelay.js";
 import { loadScriptBundle, resolveClip } from "../services/audioScripts.js";
 import { config } from "../config/index.js";
 import { createShopProvider, ShopFinder } from "../services/shops/index.js";
@@ -42,6 +43,29 @@ export default function farmerRoutes(db, deps = {}) {
         }
         await recordScan(db, { result: data, mode: "farmer", language });
         return res.status(200).json(data);
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+
+  router.post(
+    "/predict/stream",
+    farmerPredictLimiter(),
+    uploadFarmerImage.single("file"),
+    requireImageMagicBytes,
+    async (req, res, next) => {
+      try {
+        if (!req.file) return res.status(400).json({ error: "no_file", detail: "No image file was provided." });
+        const language = pickLanguage(req.body?.language);
+        await relayPredictionStream(req, res, {
+          file: req.file,
+          fields: { language },
+          onResult: async (data) => {
+            await recordScan(db, { result: data, mode: "farmer", language });
+            return data;
+          },
+        });
       } catch (err) {
         next(err);
       }

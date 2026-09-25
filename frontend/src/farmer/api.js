@@ -1,10 +1,15 @@
 import { BACKEND_URL, parseResponse } from "../api/http";
+import { streamPrediction } from "../api/sse";
 
 /** Guest diagnosis -- no token, no cookies. */
-export async function farmerPredict(file, language) {
+export async function farmerPredict(file, language, onStage) {
   const form = new FormData();
   form.append("file", file, file.name || "leaf.jpg");
   form.append("language", language);
+  if (onStage) {
+    const res = await fetch(`${BACKEND_URL}/api/farmer/predict/stream`, { method: "POST", body: form });
+    return streamPrediction(res, onStage);
+  }
   const res = await fetch(`${BACKEND_URL}/api/farmer/predict`, { method: "POST", body: form });
   return parseResponse(res);
 }

@@ -1,4 +1,5 @@
 import { BACKEND_URL, ApiError, parseResponse, authFetch } from "./http";
+import { streamPrediction } from "./sse";
 
 /**
  * Account-mode diagnosis (authenticated). `options.language` asks the ML
@@ -11,6 +12,11 @@ export async function predictDisease(file, options = {}) {
   if (options.plotId) formData.append("plot_id", String(options.plotId));
   if (options.followupOf) formData.append("followup_of", String(options.followupOf));
 
+  if (options.onStage) {
+    // Server-Sent Events: real pipeline stages as they happen.
+    const response = await authFetch("/api/predict/stream", { method: "POST", body: formData });
+    return streamPrediction(response, options.onStage);
+  }
   const response = await authFetch("/api/predict", { method: "POST", body: formData });
   return parseResponse(response);
 }

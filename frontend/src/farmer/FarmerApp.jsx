@@ -13,6 +13,8 @@ import { buildSpokenResult } from "./safetyGating";
 import { farmerPredict, getScriptBundle } from "./api";
 import "./Farmer.css";
 
+const STAGE_ICON = { validate: "📷", classify: "🔬", explain: "🔥", retrieve: "📚", generate: "✍️", verify: "✅", translate: "🌐" };
+
 /**
  * Farmer Mode: camera-first, voice-first, no login, minimal text.
  * Screens: home -> camera (or gallery) -> analysing -> result -> help / shopkeeper card.
@@ -28,6 +30,7 @@ export default function FarmerApp({ player: injectedPlayer } = {}) {
   const [error, setError] = useState(null);
   const [caption, setCaption] = useState("");
   const [showCard, setShowCard] = useState(false);
+  const [stage, setStage] = useState(null);
   const galleryRef = useRef(null);
   const [player] = useState(() => injectedPlayer || new ClipPlayer());
 
@@ -70,8 +73,11 @@ export default function FarmerApp({ player: injectedPlayer } = {}) {
       return URL.createObjectURL(file);
     });
     setScreen("analysing");
+    setStage(null);
     try {
-      const data = await farmerPredict(file, lang);
+      const data = await farmerPredict(file, lang, (e) => {
+        if (e.status !== "skipped") setStage(e.stage);
+      });
       setResult(data);
       setScreen("result");
     } catch (err) {
@@ -137,6 +143,7 @@ export default function FarmerApp({ player: injectedPlayer } = {}) {
             data-testid="farmer-gallery"
             onChange={(e) => e.target.files?.[0] && analyse(e.target.files[0])}
           />
+          <p className="fhelp__note">{t("farmer.photoNotStored")}</p>
         </main>
       )}
 
@@ -156,6 +163,11 @@ export default function FarmerApp({ player: injectedPlayer } = {}) {
         <main className="farmer__busy" role="status" aria-live="polite">
           <div className="farmer__spinner" aria-hidden="true" />
           <p>{t("farmer.checking")}</p>
+          {stage && (
+            <p className="farmer__stage">
+              <span aria-hidden="true">{STAGE_ICON[stage] || "⏳"}</span> {t(`pipeline.${stage}`)}
+            </p>
+          )}
         </main>
       )}
 

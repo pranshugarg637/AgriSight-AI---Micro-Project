@@ -10,6 +10,7 @@ import PlotsPage from "./pages/account/PlotsPage";
 import PlotDetail from "./pages/account/PlotDetail";
 import ExpertQueue from "./pages/account/ExpertQueue";
 import SettingsPage from "./pages/account/SettingsPage";
+import AdminMonitor from "./pages/account/AdminMonitor";
 
 export default function App() {
   return (
@@ -30,6 +31,14 @@ export default function App() {
         <Route path="plots" element={<PlotsPage />} />
         <Route path="plots/:id" element={<PlotDetail />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route
+          path="admin"
+          element={
+            <ProtectedRoute roles={["admin"]}>
+              <AdminMonitor />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="expert"
           element={

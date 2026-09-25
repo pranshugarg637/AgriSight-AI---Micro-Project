@@ -72,6 +72,32 @@ probabilities closer than `REFINE_MARGIN` and a *cited* question set exists).
 | `GET /api/farmer/questions?a=<class_key>&b=<class_key>&lang=hi` | – | `{pair, classes, audio_slug, questions:[{id, text, text_en, citations}], source_is_placeholder, likelihood_basis}` or `404` |
 | `POST /api/farmer/refine` | `{candidates:[{class_key, probability}] (from top_candidates), answers:{q1:"yes"\|"no"\|"unsure"}}` | `{class_key, crop, diagnosis, confidence, confidence_level, candidates, still_close, note}` — same confidence tiers as the CNN |
 
+## Streaming progress (Server-Sent Events, Step 7)
+
+`POST /api/predict/stream` (Bearer) and `POST /api/farmer/predict/stream`
+(guest) take the same multipart body and answer `text/event-stream`:
+
+```
+event: stage
+data: {"stage":"validate","status":"start"}
+event: stage
+data: {"stage":"classify","status":"done","confidence_level":"high"}
+...
+event: result
+data: { ...PredictionResponse (+ scan_id, plot_id, followup for accounts) }
+```
+
+Stages, in order: `validate`, `classify`, `explain`, `retrieve`, `generate`,
+`verify`, `translate`; `status` is `start`, `done` or `skipped` (e.g. RAG is
+skipped for unreliable results). Pipeline errors arrive as
+`event: error` with `{status_code, detail, stage}`. Validation/auth/size/rate
+errors before streaming starts are normal JSON responses. Events are emitted
+by the ML pipeline as the work happens — there is no simulated timing.
+
+## Monitoring (admin)
+
+`GET /api/v2/admin/metrics?days=30` → `{total_scans, scans_per_day:[{date, farmer, account}], confidence_levels, share_low_or_unreliable, unreliable_reasons, ood_rejections, retrieval_status, per_class:[{class_key, n, mean_confidence, share_low_or_unreliable, histogram[10], weekly[]}], expert_labels:{n_reviewed, accuracy, per_class, note}}`. No personal data.
+
 ## Account Mode (`/api/v2`, Bearer token, Step 6)
 
 All routes answer `404` (never `403`) for another user's plot/scan, so ids

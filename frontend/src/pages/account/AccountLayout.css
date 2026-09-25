@@ -33,3 +33,10 @@
 .reminder-bar a { color: var(--ink); }
 .plot-picker { display: flex; gap: var(--space-sm); align-items: center; max-width: var(--max-width); margin: var(--space-md) auto 0; padding: 0 var(--space-md); }
 .plot-picker select { font: inherit; padding: 0.45rem; border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); border: 1px solid var(--hairline); }
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--space-sm); margin: var(--space-md) 0; }
+.stat { background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--radius-md); padding: var(--space-md); display: flex; flex-direction: column; }
+.stat__value { font-size: 1.8rem; font-weight: 700; color: var(--ink); }
+.stat__label { color: var(--ink-dim); font-size: var(--fs-small); }
+.daybars { display: flex; align-items: flex-end; gap: 2px; height: 120px; border-bottom: 1px solid var(--hairline); margin-bottom: var(--space-sm); }
+.daybars__col { flex: 1; height: 100%; display: flex; align-items: flex-end; }
+.daybars__bar { width: 100%; background: var(--evidence); border-radius: 4px 4px 0 0; min-height: 2px; }

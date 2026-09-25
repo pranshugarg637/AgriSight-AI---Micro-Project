@@ -11,6 +11,7 @@ import authRoutes from "./routes/auth.js";
 import farmerRoutes from "./routes/farmer.js";
 import accountRoutes from "./routes/account.js";
 import expertRoutes from "./routes/expert.js";
+import adminRoutes from "./routes/admin.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import { requestLogger } from "./middleware/requestLogger.js";
 
@@ -39,6 +40,7 @@ export function createApp(options = {}) {
   app.use("/api/auth", authRoutes(db));
   app.use("/api/farmer", farmerRoutes(db, options.farmer));
   app.use("/api/v2/expert", expertRoutes(db));
+  app.use("/api/v2/admin", adminRoutes(db));
   app.use("/api/v2", accountRoutes(db, options.account));
   app.use("/api", predictRoutes(db));
   app.use("/api", statusRoutes);

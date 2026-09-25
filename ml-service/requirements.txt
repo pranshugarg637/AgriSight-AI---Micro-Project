@@ -1,25 +1,27 @@
-fastapi==0.115.6
-uvicorn[standard]==0.32.1
-python-multipart==0.0.19
-pydantic==2.10.3
-python-dotenv==1.0.1
+# v2: minimum versions (security audit, see docs/privacy.md#security). Floors instead of exact
+# pins also avoid the Python 3.13 pin conflicts seen on Windows.
+fastapi>=0.141
+uvicorn[standard]>=0.53
+python-multipart>=0.0.32
+pydantic>=2.13
+python-dotenv>=1.2.3
 
 torch
 torchvision
 
-pillow==11.0.0
+pillow>=12.3
 numpy
 scikit-learn
 
-pypdf==5.1.0
+pypdf>=6.19
 chromadb
 sentence-transformers
 
-httpx==0.28.1
+httpx>=0.28.1
 
-pytest==8.3.4
-pytest-asyncio==0.24.0
-reportlab==4.2.5
+pytest>=9.1
+pytest-asyncio>=1.4
+reportlab>=4.2.5
 rank_bm25
 
 # Optional (Step 2 translation, Step 5 re-ranker / NLI use sentence-transformers above):

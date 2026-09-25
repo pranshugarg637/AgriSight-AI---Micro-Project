@@ -115,3 +115,41 @@ def test_ood_reason_is_propagated_and_stops_rag(monkeypatch):
     res = run_prediction(leaf_jpeg_bytes(), "image/jpeg", "en")
     assert res.unreliable_reason == "not_a_leaf" and res.confidence_level == "unreliable"
     assert calls["retrieve"] == 0
+
+
+def _parse_sse(text):
+    import json as _json
+
+    events = []
+    for block in text.strip().split("\n\n"):
+        lines = dict(l.split(": ", 1) for l in block.split("\n") if ": " in l)
+        events.append((lines["event"], _json.loads(lines["data"])))
+    return events
+
+
+def test_stream_endpoint_emits_real_stage_events_then_result(monkeypatch):
+    from fastapi.testclient import TestClient
+    from app.main import app
+
+    install(monkeypatch, probs=HIGH)
+    client = TestClient(app, headers={"X-Internal-Token": "test-internal-token"})
+    r = client.post("/api/predict/stream", files={"file": ("l.jpg", leaf_jpeg_bytes(), "image/jpeg")}, data={"language": "en"})
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/event-stream")
+    events = _parse_sse(r.text)
+    kinds = [k for k, _ in events]
+    assert kinds[-1] == "result"
+    stages = [d["stage"] for k, d in events if k == "stage" and d["status"] in ("start", "done")]
+    assert stages[:2] == ["validate", "validate"] and "retrieve" in stages and "generate" in stages
+    assert events[-1][1]["confidence_level"] == "high"
+
+
+def test_stream_endpoint_reports_errors_as_events(monkeypatch):
+    from fastapi.testclient import TestClient
+    from app.main import app
+
+    install(monkeypatch, probs=HIGH)
+    client = TestClient(app, headers={"X-Internal-Token": "test-internal-token"})
+    r = client.post("/api/predict/stream", files={"file": ("x.txt", b"nope", "text/plain")})
+    events = _parse_sse(r.text)
+    assert events[-1][0] == "error" and events[-1][1]["status_code"] == 422

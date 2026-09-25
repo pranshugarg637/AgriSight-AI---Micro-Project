@@ -68,7 +68,7 @@ describe("Farmer Mode flow", () => {
     await waitFor(() => expect(farmerApi.getScriptBundle).toHaveBeenCalledWith("hi"));
     const file = new File(["x"], "leaf.jpg", { type: "image/jpeg" });
     fireEvent.change(screen.getByTestId("farmer-gallery"), { target: { files: [file] } });
-    await waitFor(() => expect(predict).toHaveBeenCalledWith(file, "hi"));
+    await waitFor(() => expect(predict).toHaveBeenCalledWith(file, "hi", expect.any(Function)));
     expect(await screen.findByText("टमाटर — पछेती झुलसा (लेट ब्लाइट)")).toBeInTheDocument();
     await waitFor(() => expect(player.play).toHaveBeenCalledWith(expect.arrayContaining(["hi.tomato_late_blight.safe_steps"])));
 

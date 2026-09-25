@@ -94,3 +94,25 @@ describe("Account Mode pages", () => {
     await waitFor(() => expect(review).toHaveBeenCalledWith(7, { decision: "correct", corrected_class_key: "Tomato___Early_blight" }));
   });
 });
+
+describe("Admin monitoring", () => {
+  it("renders headline numbers, per-day and per-class tables", async () => {
+    const { default: AdminMonitor } = await import("../pages/account/AdminMonitor");
+    vi.spyOn(api, "getAdminMetrics").mockResolvedValue({
+      total_scans: 3,
+      share_low_or_unreliable: 0.5,
+      ood_rejections: 1,
+      scans_per_day: [{ date: "2026-09-20", farmer: 2, account: 1 }],
+      confidence_levels: { high: { n: 1, share: 0.33 } },
+      unreliable_reasons: { not_a_leaf: 1 },
+      retrieval_status: { success: 2 },
+      per_class: [{ class_key: "Tomato___Late_blight", n: 2, mean_confidence: 0.8, share_low_or_unreliable: 0.5, weekly: [{ week: "2026-W38", n: 2, mean_confidence: 0.8 }] }],
+      expert_labels: { n_reviewed: 2, accuracy: 0.5, note: "biased sample" },
+    });
+    renderWithProviders(<AdminMonitor />, { user: { ...DEMO_USER, role: "admin" } });
+    expect(await screen.findByText("Tomato___Late_blight")).toBeInTheDocument();
+    expect(screen.getByText(/Accuracy vs expert labels \(n=2\)/)).toBeInTheDocument();
+    expect(screen.getByText("2026-09-20")).toBeInTheDocument();
+    expect(screen.getByText(/biased sample/)).toBeInTheDocument();
+  });
+});

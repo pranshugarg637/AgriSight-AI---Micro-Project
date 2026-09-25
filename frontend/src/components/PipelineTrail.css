@@ -41,3 +41,4 @@
 .trail__tag--done .trail__index {
   color: var(--evidence);
 }
+.trail__tag--skipped { opacity: 0.4; text-decoration: line-through; }

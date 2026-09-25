@@ -127,3 +127,34 @@ def test_fit_script_end_to_end_on_synthetic_dataset(synthetic_dataset_path, tmp_
     assert (models / "calibration_report.json").exists()
     assert (tmp_path / "fig" / "reliability_test.png").exists()
     assert "synthetic (weak proxy)" in report["ood"]["junk_sets"]
+
+
+def test_robustness_perturbations_are_deterministic_and_shape_preserving():
+    from app.evaluation.robustness import PERTURBATIONS
+
+    img = leaf_image()
+    for name, fn in PERTURBATIONS.items():
+        out = fn(img)
+        assert out.size == img.size, name
+        assert out.mode == "RGB", name
+    dark = np.asarray(PERTURBATIONS["low_light_x0.3"](img)).mean()
+    assert dark < np.asarray(img).mean() * 0.4
+
+
+@pytest.mark.slow
+def test_robustness_suite_end_to_end_on_synthetic_dataset(synthetic_dataset_path, tmp_path, monkeypatch):
+    import torch
+    from app.training.model_factory import build_model
+    from app.evaluation.robustness import run, PERTURBATIONS
+    from app.config import get_settings
+
+    models = tmp_path / "m"
+    models.mkdir()
+    classes = sorted(p.name for p in synthetic_dataset_path.iterdir())
+    torch.save(build_model("mobilenet_v2", len(classes), pretrained=False).state_dict(), models / "plant_disease_model.pt")
+    (models / "model_config.json").write_text(json.dumps({"backbone": "mobilenet_v2", "num_classes": len(classes), "image_size": 64}))
+    (models / "class_names.json").write_text(json.dumps(classes))
+    monkeypatch.setattr(get_settings(), "IMAGE_SIZE", 64)
+    rep = run(synthetic_dataset_path, models, max_samples=5, junk=3)
+    assert set(PERTURBATIONS) <= set(rep["results"])
+    assert all(0 <= r["accuracy"] <= 1 for k, r in rep["results"].items() if "junk" not in k)

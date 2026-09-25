@@ -88,6 +88,18 @@ and no product is ever suggested.
 - **Expert review**: role-gated queue → `reviewed_labels`, used by the
   monitoring page for accuracy against expert labels; no automatic retraining.
 
+## Observability & hardening (Step 7)
+
+- **Real progress**: `app/pipeline.py` emits stage events; the ML service
+  streams them as SSE (`/api/predict/stream`), the backend relays them
+  (`services/sseRelay.js`) and saves the scan when the `result` event arrives;
+  the React `PipelineTrail` and the farmer "checking…" screen follow them. The
+  v1 600 ms fake timer is gone.
+- **Monitoring**: `/api/v2/admin/metrics` + the admin "Monitoring" page.
+- **Robustness suite**: `python -m app.evaluation.robustness` (blur, low light,
+  JPEG, rotation, occlusion, synthetic junk).
+- **Privacy/security**: see `docs/privacy.md`; model limits in `docs/model-card.md`.
+
 ## System overview (v1 core pipeline)
 
 ```

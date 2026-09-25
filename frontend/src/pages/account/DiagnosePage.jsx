@@ -5,10 +5,11 @@ import { useTranslation } from "react-i18next";
 import UploadPanel from "../../components/UploadPanel";
 import DiagnosisCard from "../../components/DiagnosisCard";
 import PipelineTrail from "../../components/PipelineTrail";
+import { STAGES } from "../../components/pipelineStages";
 import { predictDisease, ApiError } from "../../api/client";
 import "./DiagnosePage.css";
 
-const STAGE = { IDLE: -1, UPLOAD: 0, CLASSIFY: 1, EXPLAIN: 2, VERIFY: 3 };
+const STAGE = { IDLE: -1, DONE: STAGES.length };
 
 export default function DiagnosePage() {
   const { t, i18n } = useTranslation();
@@ -27,23 +28,41 @@ export default function DiagnosePage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState(null);
   const [activeStage, setActiveStage] = useState(STAGE.IDLE);
+  const [skippedStages, setSkippedStages] = useState([]);
+  const [currentStage, setCurrentStage] = useState(null);
+
+  // Real progress: each event names the stage the server is working on.
+  function onStage({ stage, status }) {
+    const idx = STAGES.indexOf(stage);
+    if (status === "skipped") {
+      setSkippedStages((s) => [...s, stage]);
+      return;
+    }
+    if (idx >= 0) {
+      setActiveStage(status === "done" ? idx + 1 : idx);
+      setCurrentStage(stage);
+    }
+  }
 
   async function handleAnalyze(file) {
     setError(null);
     setResult(null);
     setIsAnalyzing(true);
-    setActiveStage(STAGE.CLASSIFY);
+    setSkippedStages([]);
+    setCurrentStage(null);
+    setActiveStage(0);
 
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
 
     try {
-      // Stage progression is illustrative of the pipeline; the actual work
-      // happens server-side across classify -> explain -> verify.
-      const stageTimer = setTimeout(() => setActiveStage(STAGE.EXPLAIN), 600);
-      const data = await predictDisease(file, { language: i18n.language, plotId: plotId || undefined, followupOf: followupOf || undefined });
-      clearTimeout(stageTimer);
-      setActiveStage(STAGE.VERIFY);
+      const data = await predictDisease(file, {
+        language: i18n.language,
+        plotId: plotId || undefined,
+        followupOf: followupOf || undefined,
+        onStage,
+      });
+      setActiveStage(STAGE.DONE);
       setResult(data);
     } catch (err) {
       if (err instanceof ApiError) {
@@ -77,7 +96,7 @@ export default function DiagnosePage() {
               <p className="app__subtitle">{t("diagnose.subtitle")}</p>
             </div>
           </div>
-          <PipelineTrail activeIndex={activeStage} />
+          <PipelineTrail activeIndex={activeStage} skipped={skippedStages} />
         </div>
       </header>
 
@@ -104,6 +123,7 @@ export default function DiagnosePage() {
               <div className="app__loading" role="status">
                 <div className="app__loading-spinner" aria-hidden="true" />
                 <p>{t("diagnose.running")}</p>
+                {currentStage && <p className="muted">{t(`pipeline.${currentStage}`)}…</p>}
               </div>
             )}
 
