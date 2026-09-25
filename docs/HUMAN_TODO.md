@@ -101,3 +101,23 @@ one says exactly what to do. Nothing here was invented to fill the gap.
 - [ ] Recruit at least one agronomist as `expert` (create the user, then
   `UPDATE users SET role='expert' WHERE email='...'`) so the review queue and
   expert-label accuracy in monitoring mean something.
+
+## Step 7 — Monitoring / hardening
+
+- [ ] Run the robustness suite on your machine and paste the table into
+  `docs/evaluation.md` §7: `python -m app.evaluation.robustness --max-samples 1000`.
+- [ ] Re-run `npm audit` / `pip-audit` before each release; `chromadb` had open
+  advisories with no fixed release at build time (see `docs/privacy.md`).
+- [ ] If you deploy publicly: self-host the Google Fonts (privacy), put the
+  backend behind HTTPS, set `TRUST_PROXY` correctly, and set `CORS_ORIGINS`
+  to your real frontend origin only.
+
+## Step 8 — Offline
+
+- [ ] Generate the browser model: `cd ml-service && pip install onnx onnxruntime && python -m app.export.onnx_export`
+  (writes `frontend/public/models/`; run it again after calibration so the
+  temperature/OOD thresholds are included).
+- [ ] Measure the quantisation effect: `python -m app.export.onnx_export --compare-on-test 2000`;
+  only switch the web default to int8 if accuracy/agreement stay close.
+- [ ] Test the PWA on a real low-end Android phone: install, "Save for offline
+  use", airplane mode, take a photo, reconnect, check the queued result.

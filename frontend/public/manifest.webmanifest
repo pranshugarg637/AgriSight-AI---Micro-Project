@@ -1,0 +1,12 @@
+{
+  "name": "AgriSight AI",
+  "short_name": "AgriSight",
+  "description": "Check a sick leaf with your phone camera. Voice in your language.",
+  "start_url": "/farmer",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f1712",
+  "theme_color": "#2f7d32",
+  "icons": [{ "src": "/leaf-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

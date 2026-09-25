@@ -158,3 +158,26 @@ def test_robustness_suite_end_to_end_on_synthetic_dataset(synthetic_dataset_path
     rep = run(synthetic_dataset_path, models, max_samples=5, junk=3)
     assert set(PERTURBATIONS) <= set(rep["results"])
     assert all(0 <= r["accuracy"] <= 1 for k, r in rep["results"].items() if "junk" not in k)
+
+
+@pytest.mark.slow
+def test_onnx_export_parity_and_web_metadata(tmp_path):
+    pytest.importorskip("onnx")
+    pytest.importorskip("onnxruntime")
+    import torch
+    from app.training.model_factory import build_model
+    from app.export.onnx_export import export
+
+    models = tmp_path / "m"
+    models.mkdir()
+    classes = ["A___x", "A___y", "A___healthy"]
+    torch.save(build_model("mobilenet_v2", 3, pretrained=False).state_dict(), models / "plant_disease_model.pt")
+    (models / "class_names.json").write_text(json.dumps(classes))
+    (models / "model_config.json").write_text(json.dumps({"backbone": "mobilenet_v2", "num_classes": 3, "image_size": 64,
+                                                          "temperature": 1.7, "ood": {"energy_threshold": -3.0}}))
+    web = export(models, tmp_path / "web")
+    assert web["onnx_parity_max_abs_logit_diff"] < 1e-3
+    assert web["class_names"] == classes and web["temperature"] == 1.7 and web["ood"]["energy_threshold"] == -3.0
+    assert (tmp_path / "web" / web["default_file"]).exists()
+    assert (tmp_path / "web" / web["files"]["int8"]["file"]).stat().st_size < (tmp_path / "web" / web["default_file"]).stat().st_size
+    assert "unmeasured" in web["files"]["int8"]["note"]

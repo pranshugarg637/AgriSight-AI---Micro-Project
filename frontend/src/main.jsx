@@ -6,6 +6,9 @@ import "./pages/AuthForms.css";
 import "./i18n";
 import { AuthProvider } from "./auth/AuthContext";
 import App from "./App.jsx";
+import { registerServiceWorker } from "./offline/pwa";
+
+registerServiceWorker();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

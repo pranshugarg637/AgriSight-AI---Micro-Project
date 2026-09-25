@@ -11,6 +11,9 @@ import SymptomQuestions from "./SymptomQuestions";
 import { ClipPlayer } from "./audioPlayer";
 import { buildSpokenResult } from "./safetyGating";
 import { farmerPredict, getScriptBundle } from "./api";
+import * as offline from "../offline/classifier";
+import * as queue from "../offline/queue";
+import { cacheForOffline } from "../offline/pwa";
 import "./Farmer.css";
 
 const STAGE_ICON = { validate: "📷", classify: "🔬", explain: "🔥", retrieve: "📚", generate: "✍️", verify: "✅", translate: "🌐" };
@@ -31,6 +34,25 @@ export default function FarmerApp({ player: injectedPlayer } = {}) {
   const [caption, setCaption] = useState("");
   const [showCard, setShowCard] = useState(false);
   const [stage, setStage] = useState(null);
+  const [readyResults, setReadyResults] = useState([]);
+  const [offlineMsg, setOfflineMsg] = useState(null);
+
+  // When the connection returns, send queued offline photos for the full check.
+  useEffect(() => {
+    async function flush() {
+      if (!navigator.onLine) return;
+      try {
+        const done = await queue.flushQueue((blob, language) => farmerPredict(blob, language));
+        const ok = done.filter((d) => d.result);
+        if (ok.length) setReadyResults((r) => [...r, ...ok]);
+      } catch {
+        /* IndexedDB unavailable (private mode): nothing queued */
+      }
+    }
+    flush();
+    window.addEventListener("online", flush);
+    return () => window.removeEventListener("online", flush);
+  }, []);
   const galleryRef = useRef(null);
   const [player] = useState(() => injectedPlayer || new ClipPlayer());
 
@@ -74,6 +96,10 @@ export default function FarmerApp({ player: injectedPlayer } = {}) {
     });
     setScreen("analysing");
     setStage(null);
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      await analyseOffline(file);
+      return;
+    }
     try {
       const data = await farmerPredict(file, lang, (e) => {
         if (e.status !== "skipped") setStage(e.stage);
@@ -90,6 +116,28 @@ export default function FarmerApp({ player: injectedPlayer } = {}) {
         setScreen("home");
         say("network_error");
       }
+    }
+  }
+
+  async function analyseOffline(file) {
+    let offlineResult = null;
+    try {
+      offlineResult = await offline.classifyOffline(file);
+    } catch {
+      offlineResult = null; // model not downloaded / WASM unavailable
+    }
+    try {
+      await queue.enqueuePhoto(file, lang, offlineResult);
+    } catch {
+      /* storage blocked */
+    }
+    if (offlineResult) {
+      setResult(offlineResult);
+      setScreen("result");
+    } else {
+      setOfflineMsg(t("farmer.offline.queued"));
+      setScreen("home");
+      say("offline_queued");
     }
   }
 
@@ -144,6 +192,36 @@ export default function FarmerApp({ player: injectedPlayer } = {}) {
             onChange={(e) => e.target.files?.[0] && analyse(e.target.files[0])}
           />
           <p className="fhelp__note">{t("farmer.photoNotStored")}</p>
+          {offlineMsg && (
+            <p className="fhelp__note" role="status">
+              📴 {offlineMsg}
+            </p>
+          )}
+          {readyResults.length > 0 && (
+            <button
+              type="button"
+              className="fbtn fbtn--big fbtn--primary"
+              onClick={() => {
+                const next = readyResults[0];
+                setReadyResults((r) => r.slice(1));
+                setPhotoUrl(null);
+                setResult(next.result);
+                setScreen("result");
+              }}
+            >
+              📬 {t("farmer.offline.ready", { count: readyResults.length })}
+            </button>
+          )}
+          <button
+            type="button"
+            className="fbtn fbtn--small"
+            onClick={async () => {
+              const ok = await cacheForOffline(bundle, lang);
+              setOfflineMsg(ok ? t("farmer.offline.downloaded") : t("farmer.offline.downloadFailed"));
+            }}
+          >
+            📥 {t("farmer.offline.download")}
+          </button>
         </main>
       )}
 

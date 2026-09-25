@@ -26,3 +26,4 @@ rank_bm25
 
 # Optional (Step 2 translation, Step 5 re-ranker / NLI use sentence-transformers above):
 # transformers sentencepiece IndicTransToolkit
+# Step 8 offline export: onnx onnxruntime

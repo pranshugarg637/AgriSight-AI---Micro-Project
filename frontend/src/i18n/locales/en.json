@@ -203,7 +203,15 @@
       "unavailable": "Questions are not available right now.",
       "refined": "Updated from your answers (indicative, not a laboratory test)."
     },
-    "photoNotStored": "🔒 Your photo is checked and then discarded. No login, no name, no location is saved."
+    "photoNotStored": "🔒 Your photo is checked and then discarded. No login, no name, no location is saved.",
+    "offline": {
+      "queued": "You are offline. The photo is saved on this phone and will be checked when the internet returns.",
+      "ready_one": "Full check ready for {{count}} saved photo",
+      "ready_other": "Full check ready for {{count}} saved photos",
+      "download": "Save for offline use (~25 MB)",
+      "downloaded": "Saved. Quick checks will work without internet.",
+      "downloadFailed": "Could not save for offline use (install the app, or the offline model is not set up)."
+    }
   },
   "account": {
     "loadFailed": "Could not load. Please try again.",

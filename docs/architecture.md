@@ -100,6 +100,31 @@ and no product is ever suggested.
   JPEG, rotation, occlusion, synthetic junk).
 - **Privacy/security**: see `docs/privacy.md`; model limits in `docs/model-card.md`.
 
+## Offline / low connectivity (Step 8, time-boxed)
+
+- **PWA**: `frontend/public/manifest.webmanifest` + hand-written
+  `public/sw.js` (registered in production builds only). Cache-first for
+  hashed `/assets/*` (incl. the onnxruntime WASM) and `/models/*`;
+  stale-while-revalidate for audio clips and script bundles; network-first
+  navigation with the cached shell as fallback. POSTs and personal data are
+  never cached.
+- **"Save for offline use"** (farmer home, opt-in, ~25 MB): loads the model
+  once while online and caches the language's scripts + clips.
+- **On-device inference**: `python -m app.export.onnx_export` writes
+  `frontend/public/models/{plant_disease_model.onnx, .int8.onnx, model_web.json}`
+  (not in git — generated from your trained model). `src/offline/classifier.js`
+  runs it with onnxruntime-web (WASM) and applies the exported temperature,
+  thresholds and OOD thresholds — the same tiers as the server. Offline
+  results have `retrieval_status: "offline_not_checked"` and `offline: true`,
+  so the gating always says "offline quick check" and never speaks advice
+  (no evidence retrieval offline) — it points to the agriculture office.
+- **Queue**: offline photos go to IndexedDB on the phone (`src/offline/queue.js`)
+  and are sent for the full server analysis when `online` fires, then deleted.
+- **Default stays online**: the fp32 ONNX model (numerically identical to
+  PyTorch, max |Δlogit| 7.6e-6 measured at export) is the web default; the
+  int8 file is smaller (2.5 MB vs 9.1 MB) but its accuracy change is
+  **unmeasured** until `--compare-on-test` is run on the real test split.
+
 ## System overview (v1 core pipeline)
 
 ```

@@ -213,3 +213,17 @@ rotation (15°/45°/90°), central occlusion (25%/50%) and synthetic junk:
 accuracy, mean top-1 probability, confidence-tier shares and (if fitted) the
 OOD rejection share. **Not run during the build** (needs the local dataset);
 no robustness numbers are claimed.
+
+## 8. Offline model (v2, Step 8)
+
+Measured during the build with the real trained checkpoint (`models/plant_disease_model.pt`):
+
+| Check | Result |
+|---|---|
+| PyTorch vs ONNX fp32, max abs logit difference (4 random inputs) | 7.6 × 10⁻⁶ (numerical parity) |
+| File size fp32 / int8 (dynamic quantisation) | 9.06 MB / 2.46 MB |
+| Both files load and run in onnxruntime-web 1.30 (WASM, Node) | yes |
+| **Accuracy fp32 vs int8 on the test split** | **not measured** — run `python -m app.export.onnx_export --compare-on-test 2000` |
+
+Until the int8 accuracy is measured and shown to be close to fp32, the app
+uses the fp32 model offline and keeps online (server) analysis as the default.

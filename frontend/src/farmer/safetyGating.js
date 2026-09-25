@@ -23,7 +23,14 @@ export function classSlug(classKey) {
 
 const NO_EVIDENCE = new Set(["insufficient_evidence", "knowledge_base_empty"]);
 
-export function buildSpokenResult(result, bundle, { lang = "en", questionsAvailable = false } = {}) {
+export function buildSpokenResult(result, bundle, options = {}) {
+  const gated = gate(result, bundle, options);
+  // Offline (on-device) results say so first; there is never advice offline.
+  if (result?.offline) gated.playlist.unshift(`${options.lang || "en"}.prompt.offline_result`);
+  return gated;
+}
+
+function gate(result, bundle, { lang = "en", questionsAvailable = false } = {}) {
   const p = (field) => `${lang}.prompt.${field}`;
   const c = (slug, field) => `${lang}.${slug}.${field}`;
   const level = result?.confidence_level;
