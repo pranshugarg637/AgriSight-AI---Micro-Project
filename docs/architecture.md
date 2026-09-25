@@ -68,6 +68,26 @@ none. For `low`/`unreliable` results and when no shop is found, offices are
 shown first. The UI and audio state that a listing does not guarantee stock,
 and no product is ever suggested.
 
+## Account Mode (Step 6)
+
+- **Plots + timeline**: every authenticated scan belongs to a plot (default
+  "My field"). Images and Grad-CAM overlays are stored through the
+  `LocalImageStore` interface after metadata stripping; retention via
+  `npm run retention` (`IMAGE_RETENTION_DAYS`).
+- **Actions → reminders → follow-up**: logging an action sets a re-scan date;
+  a re-scan with `followup_of` is compared with the earlier scan
+  (`services/followup.js`): diagnosis change first, then a confidence change
+  of ≥ 0.15 for the same disease; unreliable or different-disease pairs are
+  `inconclusive`. Always labelled *indicative*.
+- **Weather risk indicator** (`services/riskEngine.js`, rules not ML): JSON
+  rules with a mandatory citation; only numbers present in the cited quote;
+  Open-Meteo hourly forecast behind a provider interface with a 3-hour cache
+  and outage handling. Output per day: `favourable_conditions_forecast` /
+  `no_matching_conditions` plus the rule and citation. Never called a prediction.
+  No spray-window advisor (no cited thresholds).
+- **Expert review**: role-gated queue → `reviewed_labels`, used by the
+  monitoring page for accuracy against expert labels; no automatic retraining.
+
 ## System overview (v1 core pipeline)
 
 ```

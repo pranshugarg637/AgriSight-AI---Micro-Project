@@ -1,0 +1,17 @@
+{
+  "id": "tomato_early_blight_warm_wet",
+  "class_key": "Tomato___Early_blight",
+  "description": "Hours in the warm range the source describes as favourable for early blight, with rain (leaf-wetness proxy).",
+  "conditions": {
+    "temperature_c": { "min": 23.9, "max": 29.4 },
+    "precipitation_mm": { "gt": 0 }
+  },
+  "min_matching_hours": 1,
+  "citation": {
+    "file": "tomato_early_blight_guide.pdf",
+    "page": 1,
+    "quote": "The disease is favored by warm temperatures between 75 and 85 degrees Fahrenheit combined with periods of high humidity or leaf wetness."
+  },
+  "interpretation_notes": "75-85 °F converted to 23.9-29.4 °C. 'High humidity' has no numeric threshold in the source so humidity is not used; leaf wetness is approximated by precipitation > 0 mm.",
+  "source_is_placeholder": true
+}

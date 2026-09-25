@@ -72,6 +72,26 @@ probabilities closer than `REFINE_MARGIN` and a *cited* question set exists).
 | `GET /api/farmer/questions?a=<class_key>&b=<class_key>&lang=hi` | – | `{pair, classes, audio_slug, questions:[{id, text, text_en, citations}], source_is_placeholder, likelihood_basis}` or `404` |
 | `POST /api/farmer/refine` | `{candidates:[{class_key, probability}] (from top_candidates), answers:{q1:"yes"\|"no"\|"unsure"}}` | `{class_key, crop, diagnosis, confidence, confidence_level, candidates, still_close, note}` — same confidence tiers as the CNN |
 
+## Account Mode (`/api/v2`, Bearer token, Step 6)
+
+All routes answer `404` (never `403`) for another user's plot/scan, so ids
+cannot be probed.
+
+| Route | Notes |
+|---|---|
+| `GET /api/v2/plots` · `POST /api/v2/plots` · `PATCH /api/v2/plots/:id` · `DELETE /api/v2/plots/:id` | `{name, crop?, sowing_date? (YYYY-MM-DD), location_label?, lat?, lng?}`; `lat/lng` are silently dropped unless the user opted in (`PATCH /api/auth/me {store_location_opt_in:true}`). Deleting a plot deletes its scans and images. |
+| `GET /api/v2/plots/:id/timeline` | scans newest-first with `actions`, `followup` (`improved`/`same`/`worse`/`inconclusive`, indicative), `expert_label` |
+| `GET /api/v2/scans/:id` · `GET /api/v2/scans/:id/image[?kind=gradcam]` · `DELETE /api/v2/scans/:id` | real deletion of the row and stored files |
+| `POST /api/v2/scans/:id/dispute` | puts the scan in the expert queue |
+| `POST /api/v2/scans/:id/actions` | `{action_type: sprayed\|removed_leaves\|did_nothing\|other, note?, remind_in_days? (default 7)}` |
+| `GET /api/v2/reminders` | actions whose re-scan date has passed and that have no follow-up scan yet (in-app reminders) |
+| `POST /api/predict` with `plot_id`, `followup_of` | stores the scan (image + Grad-CAM, EXIF-free) and, for `followup_of`, returns `followup: {outcome, basis}` |
+| `GET /api/v2/risk?plot_id=[&lat=&lng=][&days=3..7]` | weather **risk indicator**: `{label:"risk indicator", disclaimer, weather_available, rules_available, results:[{rule_id, class_key, conditions, citation, source_is_placeholder, interpretation_notes, days:[{date, hours, matching_hours, level}]}]}`; `422 location_required` if the plot has no stored coordinates and none are passed (passed ones are not stored) |
+| `POST /api/v2/refine` | same as `/api/farmer/refine` |
+| `GET /api/v2/expert/queue` (expert/admin) | low / unreliable / disputed account scans without a review; farmer identity removed |
+| `GET /api/v2/expert/scans/:id/image[?kind=gradcam]` (expert/admin) | |
+| `POST /api/v2/expert/scans/:id/review` (expert/admin) | `{decision: confirm\|correct, corrected_class_key?, note?}` → `expert_reviews` + `reviewed_labels` (evaluation only; no automatic retraining) |
+
 ## Nearby help (guest, Step 4)
 
 Coordinates are used for the single request: never stored, never written to

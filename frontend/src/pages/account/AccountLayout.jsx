@@ -1,4 +1,6 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { getReminders } from "../../api/account";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../auth/AuthContext";
 import LanguagePicker from "../../components/LanguagePicker";
@@ -10,6 +12,12 @@ export default function AccountLayout() {
   const navigate = useNavigate();
   const isExpert = user && (user.role === "expert" || user.role === "admin");
   const isAdmin = user && user.role === "admin";
+  const [reminders, setReminders] = useState([]);
+  useEffect(() => {
+    getReminders()
+      .then((r) => setReminders(r?.reminders || []))
+      .catch(() => setReminders([]));
+  }, []);
 
   return (
     <div className="acct">
@@ -40,6 +48,16 @@ export default function AccountLayout() {
           {t("auth.logout")}
         </button>
       </nav>
+      {reminders.length > 0 && (
+        <div className="reminder-bar" role="status">
+          🔔 {t("reminders.due", { count: reminders.length })}{" "}
+          {reminders.slice(0, 3).map((r) => (
+            <Link key={r.action_id} to={`/account?plot=${r.plot_id}&followup=${r.scan_id}`}>
+              {r.plot_name}: {r.diagnosis}
+            </Link>
+          ))}
+        </div>
+      )}
       <Outlet />
     </div>
   );

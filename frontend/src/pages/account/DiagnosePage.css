@@ -135,3 +135,4 @@
   color: var(--ink-dim);
   font-size: var(--fs-caption);
 }
+.app__followup { background: var(--surface); border-left: 4px solid var(--evidence); padding: var(--space-sm); }

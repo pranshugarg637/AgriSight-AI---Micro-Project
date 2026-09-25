@@ -1,0 +1,17 @@
+{
+  "id": "tomato_late_blight_temp_wet",
+  "class_key": "Tomato___Late_blight",
+  "description": "Hours in the temperature range the source describes as favourable for late blight, with rain (leaf-wetness proxy).",
+  "conditions": {
+    "temperature_c": { "min": 15.6, "max": 25.6 },
+    "precipitation_mm": { "gt": 0 }
+  },
+  "min_matching_hours": 1,
+  "citation": {
+    "file": "tomato_late_blight_guide.pdf",
+    "page": 1,
+    "quote": "The disease spreads rapidly under cool, wet, and humid weather, particularly when temperatures range from 60 to 78 degrees Fahrenheit with extended periods of leaf wetness."
+  },
+  "interpretation_notes": "60-78 °F converted to 15.6-25.6 °C. 'Leaf wetness' is approximated by hourly precipitation > 0 mm because the source gives no numeric humidity or wetness-duration threshold. 'Extended periods' is not quantified in the source, so any single matching hour is reported (with the count) instead of an invented duration.",
+  "source_is_placeholder": true
+}

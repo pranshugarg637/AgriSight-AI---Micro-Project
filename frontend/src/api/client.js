@@ -9,6 +9,7 @@ export async function predictDisease(file, options = {}) {
   formData.append("file", file);
   if (options.language) formData.append("language", options.language);
   if (options.plotId) formData.append("plot_id", String(options.plotId));
+  if (options.followupOf) formData.append("followup_of", String(options.followupOf));
 
   const response = await authFetch("/api/predict", { method: "POST", body: formData });
   return parseResponse(response);

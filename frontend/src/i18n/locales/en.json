@@ -203,5 +203,87 @@
       "unavailable": "Questions are not available right now.",
       "refined": "Updated from your answers (indicative, not a laboratory test)."
     }
+  },
+  "account": {
+    "loadFailed": "Could not load. Please try again.",
+    "saveFailed": "Could not save. Please try again."
+  },
+  "plots": {
+    "name": "Plot name",
+    "crop": "Crop",
+    "sowingDate": "Sowing date",
+    "location": "Village / district (coarse)",
+    "add": "Add plot",
+    "noCoordsNote": "Plot coordinates are not stored unless you allow it in Settings.",
+    "scans_one": "{{count}} scan",
+    "scans_other": "{{count}} scans",
+    "empty": "No plots yet. A default plot is created with your first diagnosis.",
+    "newScan": "New diagnosis for this plot",
+    "timeline": "Timeline",
+    "noScans": "No scans yet.",
+    "followup": "Follow-up",
+    "indicative": "indicative only, compares two photos",
+    "expertLabel": "Expert label",
+    "rescanOn": "re-scan on",
+    "logAction": "Log what you did",
+    "rescan": "Re-scan (follow-up)",
+    "dispute": "I disagree",
+    "disputed": "Disputed",
+    "confirmDelete": "Delete this scan and its photo permanently?",
+    "attachTo": "Plot:",
+    "defaultPlot": "My field (default)",
+    "followupOf": "Follow-up of scan #{{id}}",
+    "action": {
+      "sprayed": "Sprayed",
+      "removed_leaves": "Removed affected leaves",
+      "did_nothing": "Did nothing",
+      "other": "Other"
+    },
+    "outcome": {
+      "improved": "Improved",
+      "same": "About the same",
+      "worse": "Worse",
+      "inconclusive": "Inconclusive"
+    }
+  },
+  "risk": {
+    "title": "Weather risk indicator",
+    "explain": "Checks the forecast against weather conditions that cited documents describe as favourable for diseases of this crop. It is an indicator, not a prediction.",
+    "check": "Check forecast",
+    "checkWithLocation": "Check forecast (uses my location once)",
+    "needLocation": "This plot has no coordinates. Allow location for this check, or opt in to storing plot coordinates in Settings.",
+    "failed": "Could not check the forecast.",
+    "weatherDown": "Weather data is unavailable right now.",
+    "noRules": "No cited weather rules exist for this crop yet.",
+    "placeholder": "placeholder source",
+    "day": "Day",
+    "matchingHours": "Matching hours",
+    "indicator": "Indicator",
+    "rule": "Rule",
+    "level": {
+      "favourable_conditions_forecast": "Favourable conditions forecast",
+      "no_matching_conditions": "No matching conditions"
+    }
+  },
+  "expert": {
+    "explain": "Low-confidence, unreliable and disputed scans. Your label is stored for evaluation and possible future retraining only; nothing retrains automatically.",
+    "empty": "Nothing to review.",
+    "confirm": "Confirm model label",
+    "correct": "Save correction",
+    "correctLabel": "Correct class key"
+  },
+  "settings": {
+    "locationTitle": "Location",
+    "locationExplain": "If enabled, you can save coordinates on your plots (used for weather risk). Turning it off deletes stored coordinates.",
+    "locationOptIn": "Store coordinates on my plots",
+    "saved": "Saved.",
+    "deleteTitle": "Delete account",
+    "deleteExplain": "Permanently deletes your account, plots, scans and stored photos. This cannot be undone.",
+    "deleteConfirm": "Delete your account and all data permanently?",
+    "deleteButton": "Delete my account"
+  },
+  "reminders": {
+    "due_one": "{{count}} plot is due for a re-scan:",
+    "due_other": "{{count}} plots are due for a re-scan:"
   }
 }

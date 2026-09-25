@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { listPlots } from "../../api/account";
 import { useTranslation } from "react-i18next";
 import UploadPanel from "../../components/UploadPanel";
 import DiagnosisCard from "../../components/DiagnosisCard";
@@ -10,6 +12,16 @@ const STAGE = { IDLE: -1, UPLOAD: 0, CLASSIFY: 1, EXPLAIN: 2, VERIFY: 3 };
 
 export default function DiagnosePage() {
   const { t, i18n } = useTranslation();
+  const [params] = useSearchParams();
+  const followupOf = params.get("followup");
+  const [plots, setPlots] = useState([]);
+  const [plotId, setPlotId] = useState(params.get("plot") || "");
+
+  useEffect(() => {
+    listPlots()
+      .then((r) => setPlots(r?.plots || []))
+      .catch(() => setPlots([]));
+  }, []);
   const [result, setResult] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -29,7 +41,7 @@ export default function DiagnosePage() {
       // Stage progression is illustrative of the pipeline; the actual work
       // happens server-side across classify -> explain -> verify.
       const stageTimer = setTimeout(() => setActiveStage(STAGE.EXPLAIN), 600);
-      const data = await predictDisease(file, { language: i18n.language });
+      const data = await predictDisease(file, { language: i18n.language, plotId: plotId || undefined, followupOf: followupOf || undefined });
       clearTimeout(stageTimer);
       setActiveStage(STAGE.VERIFY);
       setResult(data);
@@ -69,6 +81,20 @@ export default function DiagnosePage() {
         </div>
       </header>
 
+      {plots.length > 0 && (
+        <div className="plot-picker">
+          <label htmlFor="plot-select">{t("plots.attachTo")}</label>
+          <select id="plot-select" value={plotId} onChange={(e) => setPlotId(e.target.value)}>
+            <option value="">{t("plots.defaultPlot")}</option>
+            {plots.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+          {followupOf && <span className="muted">{t("plots.followupOf", { id: followupOf })}</span>}
+        </div>
+      )}
       <main className="app__main">
         <div className="app__grid">
           <UploadPanel onAnalyze={handleAnalyze} isAnalyzing={isAnalyzing} />
@@ -88,6 +114,11 @@ export default function DiagnosePage() {
               </div>
             )}
 
+            {result && !isAnalyzing && result.followup && (
+              <p className="app__followup" role="status">
+                {t("plots.followup")}: <strong>{t(`plots.outcome.${result.followup.outcome}`)}</strong> ({t("plots.indicative")})
+              </p>
+            )}
             {result && !isAnalyzing && <DiagnosisCard result={result} originalPreviewUrl={previewUrl} />}
 
             {!result && !isAnalyzing && !error && (

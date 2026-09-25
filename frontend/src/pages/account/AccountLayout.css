@@ -21,3 +21,15 @@
 .badge--unreliable { background: var(--confidence-unreliable-dim); color: var(--confidence-unreliable); }
 .table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); }
 .table th, .table td { text-align: left; padding: 0.45rem; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+.plot-list, .timeline { list-style: none; padding: 0; margin: 0; }
+.timeline__head { display: flex; gap: var(--space-md); align-items: flex-start; }
+.timeline__thumb { width: 96px; height: 96px; object-fit: cover; border-radius: var(--radius-sm); }
+.timeline__actions, .expert-item__actions { display: flex; gap: var(--space-sm); flex-wrap: wrap; margin-top: var(--space-sm); }
+.timeline__actions select, .expert-item__actions input { font: inherit; padding: 0.45rem; border-radius: var(--radius-sm); border: 1px solid var(--hairline); background: var(--bg-deep); color: var(--ink); }
+.expert-item { display: flex; gap: var(--space-md); }
+.expert-item__images { display: flex; gap: var(--space-xs); }
+.risk-rule { border-top: 1px solid var(--hairline); margin-top: var(--space-md); padding-top: var(--space-sm); }
+.reminder-bar { background: var(--confidence-low-dim); color: var(--ink); padding: var(--space-sm) var(--space-md); }
+.reminder-bar a { color: var(--ink); }
+.plot-picker { display: flex; gap: var(--space-sm); align-items: center; max-width: var(--max-width); margin: var(--space-md) auto 0; padding: 0 var(--space-md); }
+.plot-picker select { font: inherit; padding: 0.45rem; border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); border: 1px solid var(--hairline); }

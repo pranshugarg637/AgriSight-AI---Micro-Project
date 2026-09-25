@@ -83,3 +83,21 @@ one says exactly what to do. Nothing here was invented to fill the gap.
 - [ ] **Faithfulness**: with Ollama and the NLI model available, collect ~50
   real responses (`FAITHFULNESS_ACTION=flag`) and run
   `python -m app.faithfulness.evaluate`; report the unsupported-claim rate.
+
+## Step 6 — Account Mode
+
+- [ ] **Risk rules**: the two rules in `knowledge_base/risk_rules/` come from the
+  placeholder PDFs and are refused in production. Write rules from real
+  documents (exact numbers from the quote, units converted and explained in
+  `interpretation_notes`). Ask an agronomist whether "precipitation > 0 mm"
+  is an acceptable leaf-wetness proxy for your region, or add a cited
+  humidity/duration condition instead.
+- [ ] **Spray-window advisor**: not built — needs a cited source for rain-free
+  hours / wind-speed limits before any spraying.
+- [ ] **Open-Meteo** was not reachable from the build environment; verify
+  `GET /api/v2/risk?plot_id=<id>&lat=..&lng=..` on a connected machine and
+  check Open-Meteo's terms for your usage (free tier is non-commercial).
+- [ ] Schedule `cd backend && npm run retention` daily (Windows Task Scheduler / cron).
+- [ ] Recruit at least one agronomist as `expert` (create the user, then
+  `UPDATE users SET role='expert' WHERE email='...'`) so the review queue and
+  expert-label accuracy in monitoring mean something.

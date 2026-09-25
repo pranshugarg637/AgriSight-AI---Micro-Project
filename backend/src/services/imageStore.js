@@ -50,17 +50,24 @@ export const setImageStore = (s) => {
 };
 
 export async function deleteImagesForUser(db, userId) {
-  const rows = await db("scans").where({ user_id: userId }).whereNotNull("image_ref").select("image_ref");
-  for (const r of rows) await getImageStore().remove(r.image_ref);
+  const rows = await db("scans").where({ user_id: userId }).select("image_ref", "gradcam_ref");
+  for (const r of rows) {
+    await getImageStore().remove(r.image_ref);
+    await getImageStore().remove(r.gradcam_ref);
+  }
 }
 
 /** Retention: deletes stored images older than IMAGE_RETENTION_DAYS (scan rows are kept). */
 export async function enforceImageRetention(db, days = config.storage.imageRetentionDays) {
   const cutoff = new Date(Date.now() - days * 86400 * 1000).toISOString();
-  const rows = await db("scans").whereNotNull("image_ref").where("created_at", "<", cutoff).select("id", "image_ref");
+  const rows = await db("scans")
+    .where((q) => q.whereNotNull("image_ref").orWhereNotNull("gradcam_ref"))
+    .where("created_at", "<", cutoff)
+    .select("id", "image_ref", "gradcam_ref");
   for (const r of rows) {
     await getImageStore().remove(r.image_ref);
-    await db("scans").where({ id: r.id }).update({ image_ref: null });
+    await getImageStore().remove(r.gradcam_ref);
+    await db("scans").where({ id: r.id }).update({ image_ref: null, gradcam_ref: null });
   }
   return rows.length;
 }

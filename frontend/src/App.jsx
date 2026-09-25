@@ -6,6 +6,10 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 import AccountLayout from "./pages/account/AccountLayout";
 import DiagnosePage from "./pages/account/DiagnosePage";
 import FarmerApp from "./farmer/FarmerApp";
+import PlotsPage from "./pages/account/PlotsPage";
+import PlotDetail from "./pages/account/PlotDetail";
+import ExpertQueue from "./pages/account/ExpertQueue";
+import SettingsPage from "./pages/account/SettingsPage";
 
 export default function App() {
   return (
@@ -23,6 +27,17 @@ export default function App() {
         }
       >
         <Route index element={<DiagnosePage />} />
+        <Route path="plots" element={<PlotsPage />} />
+        <Route path="plots/:id" element={<PlotDetail />} />
+        <Route path="settings" element={<SettingsPage />} />
+        <Route
+          path="expert"
+          element={
+            <ProtectedRoute roles={["expert", "admin"]}>
+              <ExpertQueue />
+            </ProtectedRoute>
+          }
+        />
       </Route>
       <Route path="*" element={<Landing />} />
     </Routes>
