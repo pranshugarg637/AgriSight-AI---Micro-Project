@@ -17,7 +17,7 @@
 PlantVillage (Kaggle mirror), 54,305 images, 38 class folders, split
 70/15/15 (train/val/test) with seed 42. Lab-style photos: single detached
 leaves, plain backgrounds, controlled light. Class sizes range from 152
-(Potato healthy in some mirrors) to several thousand; see
+(`Potato___healthy`) to 5,507 (`Orange___Haunglongbing_(Citrus_greening)`); see
 `models/training_metrics.json → dataset_report.per_class_counts`.
 
 ## Metrics (real run, `models/evaluation_report.json`, test split n = 8,145)
@@ -53,9 +53,9 @@ Always paired with "confirm at the agriculture office".
 
 ## Known failure modes and risks
 
-1. **Lab-to-field gap.** PlantVillage accuracy (98.5%) will not transfer to
-   cluttered field photos; published work on PlantVillage-trained models
-   shows large drops on field images. Expect lower accuracy.
+1. **Lab-to-field gap.** PlantVillage accuracy (98.5%) should not be expected on
+   cluttered field photos (different backgrounds, light, several leaves,
+   camera quality). Field accuracy is unmeasured; expect it to be lower.
 2. **Spurious features.** A Grad-CAM audit found at least one heat map on a
    background artifact (shadow/mesh) rather than leaf tissue. Grad-CAM shows
    correlation, not correctness.
