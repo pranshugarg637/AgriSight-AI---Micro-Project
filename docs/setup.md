@@ -115,6 +115,11 @@ artifacts to `../models/`:
 Training on CPU can take a while depending on dataset size; a GPU
 (`torch.cuda.is_available()`) will be used automatically if present.
 
+**Optional: lesion segmentation (Dice/IoU, severity %).** This is a separate
+model that needs a dataset with hand-drawn masks. The app works without it.
+See [segmentation.md](segmentation.md) for the dataset and the
+`python -m app.segmentation.train` command.
+
 ### Set up the agricultural knowledge base (RAG)
 
 1. Add real agricultural PDF documents (extension guides, plant pathology

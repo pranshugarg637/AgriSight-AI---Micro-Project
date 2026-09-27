@@ -9,6 +9,7 @@ import logging
 from fastapi import APIRouter, HTTPException, Query
 
 from app.inference.service import InferenceService
+from app.segmentation.inference import SegmentationService
 from app.rag.vector_store import VectorStore
 from app.services.llm_service import check_ollama_health
 from app.services.prediction_log import read_predictions
@@ -45,12 +46,16 @@ async def health():
 async def model_status():
     inference_service = InferenceService.get_instance()
     status = inference_service.status()
+    seg = SegmentationService.get_instance().status()
     return ModelStatusResponse(
         model_loaded=status["model_loaded"],
         error=status["error"],
         backbone=status["backbone"],
         num_classes=status["num_classes"],
         model_version=status["model_version"],
+        seg_model_loaded=seg["seg_model_loaded"],
+        seg_model_error=seg["seg_model_error"],
+        seg_model_version=seg["seg_model_version"],
     )
 
 

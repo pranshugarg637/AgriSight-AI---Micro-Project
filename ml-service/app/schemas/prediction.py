@@ -61,6 +61,20 @@ class PredictionResponse(BaseModel):
     question_pair: str | None = Field(default=None, description="Cited symptom-question set id when top-2 are close")
     gradcam_image_base64: str | None = None
     gradcam_note: str = "Highlighted regions indicate areas that influenced the model's prediction."
+    # --- lesion segmentation add-on (additive, optional; see docs/segmentation.md) ---
+    segmentation_status: str = Field(
+        default="not_run",
+        description="'success' | 'model_not_available' | 'disabled' | 'skipped_healthy' | "
+                    "'skipped_unreliable' | 'error' | 'not_run'")
+    lesion_mask_base64: str | None = Field(default=None, description="PNG: leaf with predicted lesions in red")
+    severity_percent: float | None = Field(
+        default=None, description="Estimated % of the leaf covered by lesions (null if it could not be estimated)")
+    severity_band: str | None = Field(default=None, description="null | 'mild' | 'moderate' | 'severe'")
+    segmentation_note: str = (
+        "Affected area is an estimate from a separate lesion-segmentation model; the leaf outline "
+        "comes from a simple colour rule. It is a rough guide to how widespread the damage is, not a "
+        "measurement. The model's Dice/IoU scores on its test set are shown on the metrics page."
+    )
     explanation: str | None = None
     sources: list[SourceCitation] = []
     retrieval_status: str  # "success" | "insufficient_evidence" | "knowledge_base_empty" | "skipped_low_confidence"
@@ -90,6 +104,10 @@ class ModelStatusResponse(BaseModel):
     backbone: str | None = None
     num_classes: int
     model_version: str | None = None
+    # lesion segmentation add-on
+    seg_model_loaded: bool = False
+    seg_model_error: str | None = None
+    seg_model_version: str | None = None
 
 
 class KnowledgeBaseStatusResponse(BaseModel):

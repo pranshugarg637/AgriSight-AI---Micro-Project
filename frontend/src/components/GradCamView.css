@@ -63,3 +63,22 @@
   font-size: var(--fs-caption);
   color: var(--ink-dark-dim);
 }
+
+/* Lesion-segmentation add-on: estimated affected area */
+.gradcam__severity {
+  border-top: 1px solid var(--hairline-on-paper);
+  padding-top: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.gradcam__severity-title {
+  font-size: 1rem;
+  color: var(--ink-dark);
+}
+
+.gradcam__severity-value {
+  font-weight: 600;
+  color: var(--ink-dark);
+}

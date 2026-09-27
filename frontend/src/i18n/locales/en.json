@@ -107,6 +107,37 @@
     "overlayAlt": "Grad-CAM heatmap overlay on the leaf",
     "originalAlt": "Original uploaded leaf photo"
   },
+  "segmentation": {
+    "view": "Affected area",
+    "title": "Estimated affected area",
+    "overlayAlt": "Leaf with the areas the model marked as diseased shown in red",
+    "percent": "About {{percent}}% of the leaf looks affected ({{band}})",
+    "noPercent": "Diseased spots are marked in red, but the leaf outline was too unclear to estimate a percentage.",
+    "band": {
+      "mild": "mild",
+      "moderate": "moderate",
+      "severe": "severe"
+    },
+    "metricsTitle": "Lesion segmentation (test set)",
+    "metricsExplain": "Dice = how much the model's painted lesion area overlaps an expert's (1.0 = perfect). IoU is a stricter version of the same idea.",
+    "notTrained": "Not trained yet",
+    "notTrainedHint": "Add a dataset with hand-drawn lesion masks and run: python -m app.segmentation.train",
+    "loadFailed": "Could not load the segmentation report.",
+    "dataset": "Dataset",
+    "testImages": "Test images",
+    "meanDice": "Dice (mean per image)",
+    "microDice": "Dice (all pixels)",
+    "meanIou": "IoU (mean per image)",
+    "precision": "Pixel precision",
+    "recall": "Pixel recall",
+    "bySize": "Dice by lesion size",
+    "size": {
+      "small": "Small (<5% of image)",
+      "medium": "Medium (5–20%)",
+      "large": "Large (>20%)",
+      "no_lesion": "No lesion"
+    }
+  },
   "sources": {
     "title": "Sources",
     "kbEmpty": "The agricultural knowledge base has no documents loaded yet. See docs/rag.md for setup.",
@@ -152,6 +183,8 @@
     "yourPhoto": "Your photo",
     "showHeat": "Show where the model looked",
     "showPhoto": "Show my photo",
+    "showAffected": "Show affected area",
+    "affected": "About {{percent}}% of the leaf looks affected ({{band}})",
     "answerQuestions": "Answer 3 questions",
     "findOffice": "Agriculture office near me",
     "findHelp": "Help near me",

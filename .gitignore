@@ -28,6 +28,7 @@ data/plantvillage/
 data/vector_db/
 data/predictions_log.jsonl
 data/gradcam_outputs/
+data/segmentation/
 
 # Knowledge base PDFs can be large; track structure, not necessarily large binaries
 # (uncomment the next line if you don't want to version PDFs in git)

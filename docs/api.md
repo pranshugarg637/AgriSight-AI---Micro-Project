@@ -197,6 +197,11 @@ optional `plot_id`.
 | `faithfulness` | `{checked, backend, total_sentences, unsupported_sentences, unsupported_rate, action}` (Step 5) |
 | `question_pair` | Id of a cited symptom-question set when the top two are close, else `null` |
 | `scan_id`, `plot_id` | Added by the backend for Account Mode |
+| `segmentation_status` | Lesion-segmentation add-on: `success`, `model_not_available` (not trained), `disabled`, `skipped_healthy`, `skipped_unreliable` (not high confidence), `error`, `not_run` |
+| `lesion_mask_base64` | PNG of the leaf with predicted lesions in red, only when `segmentation_status` is `success` |
+| `severity_percent` | Estimated % of the leaf that is lesion (0–100, one decimal), or `null` if the leaf outline was too unclear |
+| `severity_band` | `mild` / `moderate` / `severe` (cut-offs `SEG_SEVERITY_MILD_MAX`, `SEG_SEVERITY_MODERATE_MAX`), or `null` |
+| `segmentation_note` | Plain-language caveat that severity is an estimate |
 
 `sources` are the same citations for both the English and the translated
 text -- translation never adds or removes evidence.
@@ -241,9 +246,15 @@ Aggregated health check.
   "error": null,
   "backbone": "mobilenet_v2",
   "num_classes": 15,
-  "model_version": "1.0.0"
+  "model_version": "1.0.0",
+  "seg_model_loaded": false,
+  "seg_model_error": "Segmentation model not found: [...] It is optional ...",
+  "seg_model_version": null
 }
 ```
+
+The `seg_*` fields describe the optional lesion-segmentation model (see
+`docs/segmentation.md`).
 
 ## GET /api/knowledge-base-status
 
@@ -289,6 +300,19 @@ been trained yet.
 
 Returns the saved `models/training_metrics.json` (per-epoch history for both
 training phases). `404` if the model hasn't been trained yet.
+
+## GET /api/segmentation-report
+
+Returns the saved `models/seg_evaluation_report.json` for the optional
+lesion-segmentation model: test-set Dice and IoU (mean per image and micro
+over all pixels), pixel precision/recall, boundary F1, the Dice distribution,
+Dice by lesion size, and the worst images. `404` until the segmentation
+model is trained (`python -m app.segmentation.train`).
+
+## GET /api/segmentation-training-metrics
+
+Returns `models/seg_training_metrics.json` (per-epoch train/val loss, val
+Dice, val IoU for both phases). `404` until trained.
 
 ## Error format
 

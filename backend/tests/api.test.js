@@ -29,6 +29,11 @@ function startMockMlService() {
         return res.end(JSON.stringify({ model_loaded: true, error: null, backbone: "mobilenet_v2", num_classes: 3, model_version: "1.0.0" }));
       }
 
+      if (req.url === "/api/segmentation-report") {
+        res.writeHead(404);
+        return res.end(JSON.stringify({ detail: "No segmentation report found. Train it first: python -m app.segmentation.train" }));
+      }
+
       if (req.url === "/api/knowledge-base-status") {
         res.writeHead(200);
         return res.end(JSON.stringify({ ready: true, num_chunks: 42 }));
@@ -128,6 +133,12 @@ test("GET /api/model-status proxies model status", async () => {
   assert.equal(res.status, 200);
   assert.equal(res.body.model_loaded, true);
   assert.equal(res.body.backbone, "mobilenet_v2");
+});
+
+test("GET /api/segmentation-report proxies the ML service (404 until trained)", async () => {
+  const res = await request(app).get("/api/segmentation-report");
+  assert.equal(res.status, 404);
+  assert.match(JSON.stringify(res.body), /app\.segmentation\.train/);
 });
 
 test("GET /api/knowledge-base-status proxies KB status", async () => {

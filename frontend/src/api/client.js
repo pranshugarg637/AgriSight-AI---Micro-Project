@@ -41,4 +41,14 @@ export async function getPredictionHistory(limit = 100) {
   return parseResponse(response);
 }
 
+/**
+ * Lesion-segmentation test report (Dice / IoU ...). Resolves to null when the
+ * optional segmentation model has not been trained yet (404).
+ */
+export async function getSegmentationReport() {
+  const response = await fetch(`${BACKEND_URL}/api/segmentation-report`);
+  if (response.status === 404) return null;
+  return parseResponse(response);
+}
+
 export { ApiError };

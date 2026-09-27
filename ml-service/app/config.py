@@ -105,6 +105,26 @@ class Settings:
     BACKBONE: str = os.getenv("BACKBONE", "mobilenet_v2")
     MODEL_VERSION: str = os.getenv("MODEL_VERSION", "1.0.0")
 
+    # --- Lesion segmentation (optional add-on; see docs/segmentation.md) ---
+    # Only activates when SEG_MODEL_PATH + SEG_CONFIG_PATH exist. The classifier
+    # above is unaffected either way.
+    SEGMENTATION_ENABLED: bool = os.getenv("SEGMENTATION_ENABLED", "true").strip().lower() in ("1", "true", "yes", "on")
+    SEG_DATASET_PATH: Path = Path(os.getenv("SEG_DATASET_PATH", str(_ROOT / "data" / "segmentation")))
+    SEG_MODEL_PATH: Path = Path(os.getenv("SEG_MODEL_PATH", str(_ROOT / "models" / "lesion_seg_model.pt")))
+    SEG_CONFIG_PATH: Path = Path(os.getenv("SEG_CONFIG_PATH", str(_ROOT / "models" / "lesion_seg_config.json")))
+    SEG_IMAGE_SIZE: int = _get_int("SEG_IMAGE_SIZE", 256)
+    SEG_THRESHOLD: float = _get_float("SEG_THRESHOLD", 0.5)
+    SEG_BATCH_SIZE: int = _get_int("SEG_BATCH_SIZE", 8)
+    SEG_NUM_EPOCHS: int = _get_int("SEG_NUM_EPOCHS", 15)
+    SEG_LEARNING_RATE: float = _get_float("SEG_LEARNING_RATE", 1e-3)
+    SEG_EARLY_STOPPING_PATIENCE: int = _get_int("SEG_EARLY_STOPPING_PATIENCE", 4)
+    SEG_MODEL_VERSION: str = os.getenv("SEG_MODEL_VERSION", "1.0.0")
+    # Severity bands (percent of estimated leaf area that is lesion)
+    SEG_SEVERITY_MILD_MAX: float = _get_float("SEG_SEVERITY_MILD_MAX", 10.0)
+    SEG_SEVERITY_MODERATE_MAX: float = _get_float("SEG_SEVERITY_MODERATE_MAX", 25.0)
+    # Below this share of the image, the leaf-area estimate is too unreliable to report a %
+    SEG_MIN_LEAF_FRACTION: float = _get_float("SEG_MIN_LEAF_FRACTION", 0.05)
+
 
 @lru_cache
 def get_settings() -> "Settings":

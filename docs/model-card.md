@@ -77,3 +77,38 @@ Wrong advice can cost a harvest or lead to unnecessary chemical use. The
 system therefore refuses to name a disease when unreliable, never recommends
 products or doses that are not in cited documents, points to agriculture
 offices, and keeps a dataset disclaimer on every response.
+
+---
+
+# Model card — lesion segmentation add-on (optional)
+
+| | |
+|---|---|
+| Architecture | U-Net decoder on a MobileNetV2 encoder (ImageNet-pretrained); 1 output channel (lesion vs. not) |
+| Input | RGB, `SEG_IMAGE_SIZE` (default 256×256), ImageNet normalisation |
+| Output | Per-pixel lesion probability → mask at threshold `SEG_THRESHOLD` (0.5) |
+| Loss | 0.5 × BCE + 0.5 × soft Dice |
+| Training | Frozen encoder, then full fine-tune at LR/10; early stopping on validation Dice |
+| Status | **Not trained yet.** No metrics exist. See `docs/segmentation.md`. |
+
+**Data:** whatever masked dataset is used (for example PlantSeg or the Kaggle
+leaf-disease segmentation set). Record its name with `--dataset-name`; it is
+saved in the config and in every report.
+
+**Metrics:** fill in from `models/seg_evaluation_report.json` after training
+(Dice and IoU, mean and micro; precision; recall; boundary F1; Dice by lesion
+size).
+
+**Intended use:** a visual aid showing *where* the damage is, plus a rough
+severity estimate. It only runs after a high-confidence, non-healthy
+classifier result.
+
+**Known limits:**
+- Severity uses a colour-rule leaf outline, so it is an *estimate* and it
+  fails on busy backgrounds.
+- The model knows "diseased vs. not", not which disease.
+- Small and early lesions are the hardest; check the small-lesion Dice
+  bucket before trusting it.
+- It inherits the crops, cameras and backgrounds of its training set.
+- The mild/moderate/severe cut-offs (10 % / 25 %) are placeholders, not
+  agronomic standards.

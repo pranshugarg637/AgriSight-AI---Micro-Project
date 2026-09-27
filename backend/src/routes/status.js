@@ -47,5 +47,10 @@ router.get("/analytics/history", (req, res, next) => {
 router.get("/analytics/export.csv", (req, res, next) => proxyGet("/api/analytics/export.csv", res, next));
 router.get("/evaluation-report", (req, res, next) => proxyGet("/api/evaluation-report", res, next));
 router.get("/training-metrics", (req, res, next) => proxyGet("/api/training-metrics", res, next));
+// Lesion segmentation add-on (Dice / IoU report; 404 until the seg model is trained).
+router.get("/segmentation-report", (req, res, next) => proxyGet("/api/segmentation-report", res, next));
+router.get("/segmentation-training-metrics", (req, res, next) =>
+  proxyGet("/api/segmentation-training-metrics", res, next)
+);
 
 export default router;

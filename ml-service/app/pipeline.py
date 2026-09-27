@@ -28,6 +28,7 @@ from app.schemas.prediction import PredictionResponse, AlternativeDiagnosis, Sou
 from app.translation import get_translation_service
 from app.faithfulness import check_explanation
 from app.symptoms.questions import find_question_set, should_ask
+from app.segmentation.inference import run_segmentation
 
 logger = logging.getLogger(__name__)
 
@@ -129,7 +130,10 @@ def run_prediction(file_bytes: bytes, content_type: str | None, language: str | 
         calibrated=result.get("calibrated", False),
         language=language,
     )
-    emit("explain", "done", None)  # Grad-CAM is produced together with the prediction
+    # Optional lesion segmentation + severity (never raises; skipped for
+    # healthy / unreliable results or when the seg model isn't trained).
+    common.update(run_segmentation(validation.image, diagnosis).as_response_fields())
+    emit("explain", "done", {"segmentation_status": common["segmentation_status"]})
 
     # Unreliable -> stop before RAG/LLM.
     if not diagnosis.is_reliable and diagnosis.confidence_level == "unreliable":

@@ -242,3 +242,23 @@ Measured during the build with the real trained checkpoint (`models/plant_diseas
 
 Until the int8 accuracy is measured and shown to be close to fp32, the app
 uses the fp32 model offline and keeps online (server) analysis as the default.
+
+## 9. Lesion segmentation (optional add-on)
+
+### Status: mechanism built and unit-tested. **No real numbers yet.**
+
+A separate U-Net model paints diseased pixels. It is evaluated with **Dice and
+IoU** (mean per image *and* micro over all pixels), pixel precision/recall,
+boundary F1 (2 px tolerance), the Dice distribution, and Dice by lesion size.
+These are written by `python -m app.segmentation.train` (or
+`python -m app.segmentation.evaluate`) to `models/seg_evaluation_report.json`
+and served at `GET /api/segmentation-report`.
+
+It needs a dataset with **hand-drawn masks**. PlantVillage has none, so
+nothing can be reported until one is downloaded and trained on. See
+[segmentation.md](segmentation.md) for dataset options, commands, the
+empty-mask rule and a blank results table to fill in.
+
+The unit tests check the metric formulas against hand-computed cases, and a
+tiny synthetic run checks the full train → evaluate → serve path. Synthetic
+toy numbers are **not** results and must never be quoted.

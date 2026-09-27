@@ -35,6 +35,7 @@ Leaf photo
    → confidence-aware diagnosis (high / low / unreliable)
    → differential diagnosis (top alternatives)
    → Grad-CAM visual explanation
+   → (optional) lesion segmentation → red "affected area" mask + severity estimate
    → structured query → RAG retrieval over curated agricultural PDFs
    → grounded LLM generation (Ollama / llama3.2), constrained to retrieved evidence only
    → farmer-friendly explanation + citations
@@ -52,6 +53,7 @@ system says so explicitly rather than guessing or inventing an answer.
 | ML/RAG service | Python + FastAPI |
 | Computer vision | PyTorch, MobileNetV2 / EfficientNet-B0 (transfer learning) |
 | Explainability | Grad-CAM |
+| Lesion segmentation (optional) | U-Net on MobileNetV2, evaluated with Dice / IoU (`docs/segmentation.md`) |
 | Vector database | Chroma |
 | Embeddings | Sentence Transformers (`all-MiniLM-L6-v2`) |
 | LLM | Ollama, running `llama3.2` locally |
@@ -89,6 +91,7 @@ scripts/            Utility scripts
 | `docs/api.md` | Every endpoint (auth, farmer, account, expert, admin, SSE) |
 | `docs/architecture.md` | Layers, Farmer Mode, help finder, account mode, offline |
 | `docs/evaluation.md` | Metrics — and which ones are not measured yet |
+| `docs/segmentation.md` | Optional lesion segmentation: Dice/IoU, masked datasets, severity estimate |
 | `docs/rag.md`, `docs/knowledge-base-guide.md` | Retrieval, safety rule, adding real documents |
 | `docs/privacy.md`, `docs/model-card.md` | Data handling, security, model limits |
 | `docs/HUMAN_TODO.md` | Content, reviews and keys only a person can supply |

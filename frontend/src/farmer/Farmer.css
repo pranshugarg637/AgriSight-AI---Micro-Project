@@ -52,6 +52,7 @@
 .fres__band-icon { font-size: 2.4rem; }
 .fres__name { font-size: 1.6rem; font-weight: 800; text-align: center; margin: 0; }
 .fres__maybe { color: #ffb020; }
+.fres__severity { font-size: 1.15rem; font-weight: 700; text-align: center; margin: 0; }
 .fres__photo { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
 .fres__photo img { max-width: min(92vw, 420px); max-height: 38vh; border-radius: 16px; }
 .fres__actions { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }

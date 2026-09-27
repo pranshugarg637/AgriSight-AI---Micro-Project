@@ -25,9 +25,19 @@ export default function DiagnosisCard({ result, originalPreviewUrl }) {
     translation_backend: translationBackend,
     translation_status: translationStatus,
     unreliable_reason: unreliableReason,
+    segmentation_status: segmentationStatus,
+    lesion_mask_base64: lesionMaskBase64,
+    severity_percent: severityPercent,
+    severity_band: severityBand,
+    segmentation_note: segmentationNote,
   } = result;
 
   const isUnreliable = confidenceLevel === "unreliable";
+  // Optional lesion-segmentation add-on: only shown when it actually ran.
+  const lesion =
+    segmentationStatus === "success" && lesionMaskBase64
+      ? { maskBase64: lesionMaskBase64, severityPercent, severityBand, note: segmentationNote }
+      : null;
 
   return (
     <div className="diagnosis-card">
@@ -64,9 +74,14 @@ export default function DiagnosisCard({ result, originalPreviewUrl }) {
             </section>
           )}
 
-          {gradcamBase64 && (
+          {(gradcamBase64 || lesion) && (
             <section className="diagnosis-card__section">
-              <GradCamView originalUrl={originalPreviewUrl} gradcamBase64={gradcamBase64} note={gradcamNote} />
+              <GradCamView
+                originalUrl={originalPreviewUrl}
+                gradcamBase64={gradcamBase64}
+                note={gradcamNote}
+                lesion={lesion}
+              />
             </section>
           )}
 

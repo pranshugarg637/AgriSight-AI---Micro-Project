@@ -39,3 +39,34 @@ async def get_training_metrics():
         )
     with open(path) as f:
         return json.load(f)
+
+
+# --- Lesion segmentation add-on (see docs/segmentation.md) -------------------
+
+@router.get("/segmentation-report")
+async def get_segmentation_report():
+    """Test-set Dice / IoU / precision / recall written by app.segmentation.train/evaluate."""
+    from app.segmentation.evaluate import seg_report_path
+
+    path = seg_report_path()
+    if not path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="No segmentation report found. Train it first: python -m app.segmentation.train",
+        )
+    with open(path) as f:
+        return json.load(f)
+
+
+@router.get("/segmentation-training-metrics")
+async def get_segmentation_training_metrics():
+    from app.segmentation.evaluate import seg_training_metrics_path
+
+    path = seg_training_metrics_path()
+    if not path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="No segmentation training metrics found. Train it first: python -m app.segmentation.train",
+        )
+    with open(path) as f:
+        return json.load(f)

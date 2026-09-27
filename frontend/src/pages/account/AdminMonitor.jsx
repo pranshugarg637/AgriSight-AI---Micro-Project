@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as api from "../../api/account";
+import SegmentationMetricsCard from "../../components/SegmentationMetricsCard";
 
 const pct = (x) => (x == null ? "—" : `${Math.round(x * 100)}%`);
 
@@ -142,6 +143,8 @@ export default function AdminMonitor() {
         </table>
         <p className="muted">{m.expert_labels.note}</p>
       </section>
+
+      <SegmentationMetricsCard />
     </main>
   );
 }

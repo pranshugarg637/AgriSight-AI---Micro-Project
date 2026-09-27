@@ -45,7 +45,7 @@ def check_document_metadata(pdf_path: Path, production: bool, strict: bool = Fal
         problems.append("no .meta.json sidecar (title/organization/source_url unknown)")
     else:
         try:
-            raw = json.loads(meta_path.read_text(encoding="utf-8"))
+            raw = json.loads(meta_path.read_text(encoding="utf-8-sig"))
         except json.JSONDecodeError as e:
             check.errors.append(f"sidecar is not valid JSON: {e}")
             return check

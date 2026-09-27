@@ -134,3 +134,17 @@ one says exactly what to do. Nothing here was invented to fill the gap.
   only switch the web default to int8 if accuracy/agreement stay close.
 - [ ] Test the PWA on a real low-end Android phone: install, "Save for offline
   use", airplane mode, take a photo, reconnect, check the queued result.
+
+## Lesion segmentation add-on (optional)
+
+- [ ] **Download a dataset with hand-drawn lesion masks** (PlantVillage has
+  none). Options, and their licence caveats, are in `docs/segmentation.md`.
+  Then run `python -m app.segmentation.prepare --images ... --masks ...`.
+- [ ] **Train the segmentation model:** `cd ml-service && python -m app.segmentation.train --dataset-name "<name>"`,
+  restart the ML service, and check `GET /api/model-status` → `seg_model_loaded: true`.
+- [ ] Copy the real test numbers from `models/seg_evaluation_report.json` into
+  the results table in `docs/segmentation.md` and into the model card.
+- [ ] Ask an agronomist whether the mild/moderate/severe cut-offs (10 % / 25 %)
+  make sense for your crops, and change `SEG_SEVERITY_*` in `.env` if not.
+- [ ] Native-speaker review of the new Hindi strings (`segmentation.*`,
+  `farmer.affected`, `farmer.showAffected` in `hi.json`).
